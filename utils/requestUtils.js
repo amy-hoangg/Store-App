@@ -11,7 +11,16 @@ const getCredentials = request => {
   //       You need to first decode the header back to its original form ("email:password").
   //  See: https://attacomsian.com/blog/nodejs-base64-encode-decode
   //       https://stackabuse.com/encoding-and-decoding-base64-strings-in-node-js/
-  throw new Error('Not Implemented');
+  const authorizationHeader = request.headers.authorization;
+
+  if (authorizationHeader) {
+    // Remove the "Basic " prefix and decode the base64 encoded string
+    const credentials = Buffer.from(authorizationHeader.split(' ')[1], 'base64').toString('utf-8');
+    const [username, password] = credentials.split(':');
+    return [username, password];
+  }
+
+  return null;
 };
 
 /**
@@ -37,7 +46,13 @@ const acceptsJson = request => {
  */
 const isJson = request => {
   // TODO: 8.4 Check whether request "Content-Type" is JSON or not
-  throw new Error('Not Implemented');
+  const contentType = request.headers['content-type'];
+
+  if (contentType) {
+    return contentType.toLowerCase().includes('application/json');
+  }
+
+  return false;
 };
 
 /**
