@@ -131,7 +131,7 @@ const saveNewUser = user => {
   // Use generateId() to assign a unique id to the newly created user.
   const newUser = {...user };
   newUser._id = generateId();
-  if (!newUser.role) newUser.role = 'customer';
+  newUser.role = 'customer';
   data.users.push(newUser);
   return {...newUser };
 };
