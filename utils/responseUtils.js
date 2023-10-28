@@ -4,11 +4,11 @@ const basicAuthChallenge = response => {
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#the_general_http_authentication_framework
   // The first step of the challenge and response flow  
   // as described on the webpage is done here. 
-  response.setHeader('WWW-Authenticate', 'Basic');
-  response.status(401);
-  //Basic: This is a simple form of HTTP authentication where the client sends a Base64-encoded string of the username and password in the Authorization header.'
-  //The code response.setHeader('WWW-Authenticate', 'Basic'); sets the WWW-Authenticate header in the HTTP response
-  
+  response.writeHead(401, {
+    'Content-Type': 'text/plain',
+    'WWW-Authenticate': 'Basic'
+  });
+  return response.end();
 };
 
 const sendJson = (response, payload, code = 200) => {

@@ -1,9 +1,10 @@
 /* eslint-disable max-lines-per-function */
 /* eslint-disable complexity */
 const responseUtils = require('./utils/responseUtils');
-const { acceptsJson, isJson, parseBodyJson, getCredentials } = require('./utils/requestUtils');
+const { acceptsJson, isJson, parseBodyJson } = require('./utils/requestUtils');
 const { renderPublic } = require('./utils/render');
 const { emailInUse, getAllUsers, saveNewUser, validateUser } = require('./utils/users');
+const { getCurrentUser } = require('./auth/auth');
 
 /**
  * Known API routes and their allowed methods
@@ -82,7 +83,7 @@ const handleRequest = async(request, response) => {
     throw new Error('Not Implemented');
   }
 
-  // Default to 404 Not Foundnpm if unknown url
+  // Default to 404 Not Found if unknown url
   if (!(filePath in allowedMethods)) return responseUtils.notFound(response);
 
   // See: http://restcookbook.com/HTTP%20Methods/options/
@@ -98,49 +99,25 @@ const handleRequest = async(request, response) => {
     return responseUtils.contentTypeNotAcceptable(response);
   }
 
-// GET all users
-if (filePath === '/api/users' && method.toUpperCase() === 'GET') {
-  // Check for the "Authorization" header
-  const authorizationHeader = request.headers.authorization;
+  // GET all users
+  if (filePath === '/api/users' && method.toUpperCase() === 'GET') {
+    // TODO: 8.5 Add authentication (only allowed to users with role "admin")
 
-  if (!authorizationHeader) {
-    // 1) Authorization header is missing
-    responseUtils.sendUnauthorized(response, 'Authorization header is missing');
-  } 
-  
-  else {
-    // Extract the credentials from the Authorization header
-    const credentials = getCredentials(request);
+    const authorizationHeader = request.headers.authorization;
+    const currentUser = getCurrentUser(request);
 
-    if (!credentials) {
-      // 2) Authorization header is missing or empty
-      responseUtils.basicAuthChallenge(response);
-    } 
-    else {
-      const [username, password] = credentials;
+    if(!authorizationHeader || !authorizationHeader.startsWith("Basic ")) {
+      return responseUtils.basicAuthChallenge(response);
 
-      if (!isValidBase64(username, password)) {
-        // 4) Authorization header is not properly encoded
-        responseUtils.basicAuthChallenge(response);
-      } 
-      else {
-        // Authenticate the user
-        const user = authenticateUser(username, password);
-
-        if (!user) {
-          // 5) Authorization credentials are incorrect
-          responseUtils.basicAuthChallenge(response);
-        } else if (user.role === 'customer') {
-          // 6) Customer credentials are received
-          responseUtils.forbidden(response, 'Access denied. Only admin users can access this resource.');
-        } else if (user.role === 'admin') {
-          // 7) Admin credentials are received
-          responseUtils.sendJson(response, getAllUsers());
-        }
-      }
     }
+
+    if(currentUser && currentUser.role === 'customer') {
+      return responseUtils.forbidden(response);
+    }
+
+
+    return responseUtils.sendJson(response, getAllUsers());
   }
-}
 
 
 
