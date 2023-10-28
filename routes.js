@@ -1,5 +1,7 @@
+/* eslint-disable max-lines-per-function */
+/* eslint-disable complexity */
 const responseUtils = require('./utils/responseUtils');
-const { acceptsJson, isJson, parseBodyJson } = require('./utils/requestUtils');
+const { acceptsJson, isJson, parseBodyJson, getCredentials } = require('./utils/requestUtils');
 const { renderPublic } = require('./utils/render');
 const { emailInUse, getAllUsers, saveNewUser, validateUser } = require('./utils/users');
 
@@ -80,7 +82,7 @@ const handleRequest = async(request, response) => {
     throw new Error('Not Implemented');
   }
 
-  // Default to 404 Not Found if unknown url
+  // Default to 404 Not Foundnpm if unknown url
   if (!(filePath in allowedMethods)) return responseUtils.notFound(response);
 
   // See: http://restcookbook.com/HTTP%20Methods/options/
@@ -96,34 +98,79 @@ const handleRequest = async(request, response) => {
     return responseUtils.contentTypeNotAcceptable(response);
   }
 
-  // GET all users
-  if (filePath === '/api/users' && method.toUpperCase() === 'GET') {
-    // TODO: 8.5 Add authentication (only allowed to users with role "admin")
-    return responseUtils.sendJson(response, getAllUsers());
+// GET all users
+if (filePath === '/api/users' && method.toUpperCase() === 'GET') {
+  // Check for the "Authorization" header
+  const authorizationHeader = request.headers.authorization;
+
+  if (!authorizationHeader) {
+    // 1) Authorization header is missing
+    responseUtils.sendUnauthorized(response, 'Authorization header is missing');
+  } 
+  
+  else {
+    // Extract the credentials from the Authorization header
+    const credentials = getCredentials(request);
+
+    if (!credentials) {
+      // 2) Authorization header is missing or empty
+      responseUtils.basicAuthChallenge(response);
+    } 
+    else {
+      const [username, password] = credentials;
+
+      if (!isValidBase64(username, password)) {
+        // 4) Authorization header is not properly encoded
+        responseUtils.basicAuthChallenge(response);
+      } 
+      else {
+        // Authenticate the user
+        const user = authenticateUser(username, password);
+
+        if (!user) {
+          // 5) Authorization credentials are incorrect
+          responseUtils.basicAuthChallenge(response);
+        } else if (user.role === 'customer') {
+          // 6) Customer credentials are received
+          responseUtils.forbidden(response, 'Access denied. Only admin users can access this resource.');
+        } else if (user.role === 'admin') {
+          // 7) Admin credentials are received
+          responseUtils.sendJson(response, getAllUsers());
+        }
+      }
+    }
   }
+}
+
+
+
+
 
   // register new user
-  if (filePath === '/api/register' && method.toUpperCase() === 'POST') {
+  if (filePath === "/api/register" && method.toUpperCase() === "POST") {
     // Fail if not a JSON request, don't allow non-JSON Content-Type
     if (!isJson(request)) {
-      return responseUtils.badRequest(response, 'Invalid Content-Type. Expected application/json');
+      return responseUtils.badRequest(
+        response,
+        "Invalid Content-Type. Expected application/json"
+      );
     }
 
     // TODO: 8.4 Implement registration
     // You can use parseBodyJson(request) method from utils/requestUtils.js to parse request body.
     // Useful methods here include:
-    // - validateUser(user) from /utils/users.js 
+    // - validateUser(user) from /utils/users.js
     // - emailInUse(user.email) from /utils/users.js
     // - badRequest(response, message) from /utils/responseUtils.js
     const body = await parseBodyJson(request);
     const validationErrors = validateUser(body);
 
     if (validationErrors.length > 0) {
-      return responseUtils.badRequest(response, validationErrors.join(', '));
+      return responseUtils.badRequest(response, validationErrors.join(", "));
     }
 
     if (emailInUse(body.email)) {
-      return responseUtils.badRequest(response, 'Email already in use');
+      return responseUtils.badRequest(response, "Email already in use");
     }
 
     const newUser = saveNewUser(body);
