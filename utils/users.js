@@ -85,6 +85,12 @@ const getUserById = userId => {
   const user = data.users.find(user => user._id === userId);
   return user && { ...user };
 };
+/**
+ * when user is not undefined, the return statement effectively returns a copy of the user object. 
+ * This is a way to ensure that the returned object is a new object and not a reference to the original object in the data.users array. 
+ * It helps maintain data immutability by preventing modifications to the original object outside of this module. 
+ * If user is undefined, the entire return statement evaluates to undefined, indicating that no matching user was found.
+ */
 
 /**
  * Delete user by its ID and return the deleted user
@@ -100,7 +106,8 @@ const deleteUserById = userId => {
     // Use splice to remove the user from the array and return a copy of the deleted user
     const deletedUser = data.users.splice(userIndex, 1)[0];
     return { ...deletedUser };
-  } else {
+  } 
+  else {
     return undefined; // User not found, return undefined
   }
 };
