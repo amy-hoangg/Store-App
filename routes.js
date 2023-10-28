@@ -1,10 +1,15 @@
 /* eslint-disable max-lines-per-function */
 /* eslint-disable complexity */
-const responseUtils = require('./utils/responseUtils');
-const { acceptsJson, isJson, parseBodyJson } = require('./utils/requestUtils');
-const { renderPublic } = require('./utils/render');
-const { emailInUse, getAllUsers, saveNewUser, validateUser } = require('./utils/users');
-const { getCurrentUser } = require('./auth/auth');
+const responseUtils = require("./utils/responseUtils");
+const { acceptsJson, isJson, parseBodyJson } = require("./utils/requestUtils");
+const { renderPublic } = require("./utils/render");
+const {
+  emailInUse,
+  getAllUsers,
+  saveNewUser,
+  validateUser,
+} = require("./utils/users");
+const { getCurrentUser } = require("./auth/auth");
 
 /**
  * Known API routes and their allowed methods
@@ -13,8 +18,8 @@ const { getCurrentUser } = require('./auth/auth');
  * in response to an OPTIONS request by sendOptions() (Access-Control-Allow-Methods)
  */
 const allowedMethods = {
-  '/api/register': ['POST'],
-  '/api/users': ['GET']
+  "/api/register": ["POST"],
+  "/api/users": ["GET"],
 };
 
 /**
@@ -26,10 +31,10 @@ const allowedMethods = {
 const sendOptions = (filePath, response) => {
   if (filePath in allowedMethods) {
     response.writeHead(204, {
-      'Access-Control-Allow-Methods': allowedMethods[filePath].join(','),
-      'Access-Control-Allow-Headers': 'Content-Type,Accept',
-      'Access-Control-Max-Age': '86400',
-      'Access-Control-Expose-Headers': 'Content-Type,Accept'
+      "Access-Control-Allow-Methods": allowedMethods[filePath].join(","),
+      "Access-Control-Allow-Headers": "Content-Type,Accept",
+      "Access-Control-Max-Age": "86400",
+      "Access-Control-Expose-Headers": "Content-Type,Accept",
     });
     return response.end();
   }
@@ -45,7 +50,7 @@ const sendOptions = (filePath, response) => {
  * @returns {boolean}
  */
 const matchIdRoute = (url, prefix) => {
-  const idPattern = '[0-9a-z]{8,24}';
+  const idPattern = "[0-9a-z]{8,24}";
   const regex = new RegExp(`^(/api)?/${prefix}/${idPattern}$`);
   return regex.test(url);
 };
@@ -56,17 +61,18 @@ const matchIdRoute = (url, prefix) => {
  * @param {string} url filePath
  * @returns {boolean}
  */
-const matchUserId = url => {
-  return matchIdRoute(url, 'users');
+const matchUserId = (url) => {
+  return matchIdRoute(url, "users");
 };
 
-const handleRequest = async(request, response) => {
+const handleRequest = async (request, response) => {
   const { url, method, headers } = request;
   const filePath = new URL(url, `http://${headers.host}`).pathname;
 
   // serve static files from public/ and return immediately
-  if (method.toUpperCase() === 'GET' && !filePath.startsWith('/api')) {
-    const fileName = filePath === '/' || filePath === '' ? 'index.html' : filePath;
+  if (method.toUpperCase() === "GET" && !filePath.startsWith("/api")) {
+    const fileName =
+      filePath === "/" || filePath === "" ? "index.html" : filePath;
     return renderPublic(fileName, response);
   }
 
@@ -78,16 +84,17 @@ const handleRequest = async(request, response) => {
     //  If the current user's role is not admin you can use forbidden(response) from /utils/responseUtils.js to send a reply
     // Useful methods here include:
     // - getUserById(userId) from /utils/users.js
-    // - notFound(response) from  /utils/responseUtils.js 
+    // - notFound(response) from  /utils/responseUtils.js
     // - sendJson(response,  payload)  from  /utils/responseUtils.js can be used to send the requested data in JSON format
-    throw new Error('Not Implemented');
+    throw new Error("Not Implemented");
   }
 
   // Default to 404 Not Found if unknown url
   if (!(filePath in allowedMethods)) return responseUtils.notFound(response);
 
   // See: http://restcookbook.com/HTTP%20Methods/options/
-  if (method.toUpperCase() === 'OPTIONS') return sendOptions(filePath, response);
+  if (method.toUpperCase() === "OPTIONS")
+    return sendOptions(filePath, response);
 
   // Check for allowable methods
   if (!allowedMethods[filePath].includes(method.toUpperCase())) {
@@ -100,28 +107,21 @@ const handleRequest = async(request, response) => {
   }
 
   // GET all users
-  if (filePath === '/api/users' && method.toUpperCase() === 'GET') {
+  if (filePath === "/api/users" && method.toUpperCase() === "GET") {
     // TODO: 8.5 Add authentication (only allowed to users with role "admin")
-
     const authorizationHeader = request.headers.authorization;
-    const currentUser = getCurrentUser(request);
+    const user = await getCurrentUser(request);
 
-    if(!authorizationHeader || !authorizationHeader.startsWith("Basic ")) {
+    if (!authorizationHeader || !user) {
       return responseUtils.basicAuthChallenge(response);
-
     }
 
-    if(currentUser && currentUser.role === 'customer') {
+    if(user.role === 'customer') {
       return responseUtils.forbidden(response);
     }
 
-
     return responseUtils.sendJson(response, getAllUsers());
   }
-
-
-
-
 
   // register new user
   if (filePath === "/api/register" && method.toUpperCase() === "POST") {
