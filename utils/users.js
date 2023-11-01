@@ -67,7 +67,7 @@ const emailInUse = email => data.users.some(user => user.email === email);
  * @returns {Object|undefined}
  */
 const getUser = (email, password) => {
-  const user = data.users.find(user => user.email === email && user.password === password);
+  const user = data.users.find(getuser => getuser.email === email && getuser.password === password);
   return user && {...user };
 };
 
@@ -82,7 +82,7 @@ const getUser = (email, password) => {
  */
 const getUserById = userId => {
   // TODO: 8.4 Find user by user id
-  const user = data.users.find(user => user._id === userId);
+  const user = data.users.find(getuserbyid => getuserbyid._id === userId);
   return user && { ...user };
 };
 /**
@@ -158,7 +158,7 @@ const saveNewUser = user => {
  */
 const updateUserRole = (userId, role) => {
   // TODO: 8.4 Update user's role
-  const user = data.users.find(user => user._id === userId);
+  const user = data.users.find(userrole => userrole._id === userId);
 
   if (user) {
     if (role === "customer" || role === "admin") {
