@@ -164,7 +164,8 @@ const updateUserRole = (userId, role) => {
     if (role === "customer" || role === "admin") {
       user.role = role;
       return { ...user };
-    } else {
+    } 
+    else {
       throw new Error('Unknown role');
     }
   } else {

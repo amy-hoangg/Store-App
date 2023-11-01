@@ -8,6 +8,9 @@ const {
   getAllUsers,
   saveNewUser,
   validateUser,
+  deleteUserById,
+  getUserById,
+  updateUserRole,
 } = require("./utils/users");
 const { getCurrentUser } = require("./auth/auth");
 
@@ -86,7 +89,106 @@ const handleRequest = async (request, response) => {
     // - getUserById(userId) from /utils/users.js
     // - notFound(response) from  /utils/responseUtils.js
     // - sendJson(response,  payload)  from  /utils/responseUtils.js can be used to send the requested data in JSON format
-    throw new Error("Not Implemented");
+    // throw new Error("Not Implemented");
+
+    // View GET
+    const userId = filePath.split("/").pop();
+    const user = getUserById(userId);
+
+    if (method.toUpperCase() === "GET") {
+      const authorizationHeader = request.headers.authorization;
+      const currentUser = await getCurrentUser(request);
+      if (!authorizationHeader || !currentUser) {
+        return responseUtils.basicAuthChallenge(response);
+      }
+      if (currentUser.role === "customer") {
+        return responseUtils.forbidden(response);
+      }
+
+      if (!user) {
+        return responseUtils.notFound(response);
+      }
+
+      return responseUtils.sendJson(response, user);
+    }
+
+    // Update PUT
+    if (method.toUpperCase() === "PUT") {
+      const authorizationHeader = request.headers.authorization;
+      const currentUser = await getCurrentUser(request);
+    
+      if (!authorizationHeader || !currentUser) {
+        return responseUtils.basicAuthChallenge(response);
+      }
+    
+      if (currentUser.role !== "admin") {
+        return responseUtils.forbidden(response);
+      }
+    
+      if (!user) {
+        return responseUtils.notFound(response);
+      }
+    
+      // Parse the request body to get the updated role
+      try {
+        const body = await parseBodyJson(request);
+        if (!body.role) {
+          // Handle the case when role is missing
+          return responseUtils.badRequest(response, "Role is missing");
+        }
+    
+        // Update the user's role
+        try {
+          const updatedUser = updateUserRole(userId, body.role);
+    
+          if (updatedUser) {
+            return responseUtils.sendJson(response, updatedUser);
+          } else {
+            return responseUtils.internalServerError(response);
+          }
+        } catch (error) {
+          // Handle the "Unknown role" error here
+          return responseUtils.badRequest(response, "Unknown role");
+        }
+      } catch (error) {
+        return responseUtils.internalServerError(response, error.message);
+      }
+    }
+    
+    
+
+    // Delete
+    if (method.toUpperCase() === "DELETE") {
+      const authorizationHeader = request.headers.authorization;
+      const currentUser = await getCurrentUser(request);
+      if (!authorizationHeader || !currentUser) {
+        return responseUtils.basicAuthChallenge(response);
+      }
+      if (currentUser.role === "customer") {
+        return responseUtils.forbidden(response);
+      }
+
+      if (!user) {
+        return responseUtils.notFound(response);
+      }
+
+      else
+      {
+      // Delete the user and get the deleted user
+      const deletedUser = deleteUserById(userId);
+
+      if (deletedUser) {
+        return responseUtils.sendJson(response, deletedUser);
+      }
+      }
+    }
+
+    // Handling OPTIONS requests
+    if (method.toUpperCase === "OPTIONS") {
+      return sendOptions(filePath, response);
+    }
+
+    return responseUtils.sendJson(response, user);
   }
 
   // Default to 404 Not Found if unknown url
@@ -116,7 +218,7 @@ const handleRequest = async (request, response) => {
       return responseUtils.basicAuthChallenge(response);
     }
 
-    if(user.role === 'customer') {
+    if (user.role === "customer") {
       return responseUtils.forbidden(response);
     }
 
