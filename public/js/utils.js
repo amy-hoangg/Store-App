@@ -69,9 +69,26 @@ const postOrPutJSON = async(url, method, data = {}) => {
  * @returns {Promise<*>} promise that resolves to the parsed JSON
  */
 const deleteResource = async url => {
-  // TODO: 8.6 Implement this
-  throw new Error('Not Implemented');
+  try {
+    const response = await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Network response was not OK. Received ${response.status} ${response.statusText}`);
+    }
+
+    // Since it's a DELETE request, there may not be a response body.
+    // In this case, you can return a simple success message or status code.
+    return { message: 'Resource deleted successfully' };
+  } catch (error) {
+    throw error;
+  }
 };
+
 
 /**
  * Generate random unique id to use as id value on notifications
