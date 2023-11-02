@@ -97,7 +97,7 @@ const placeOrder = async() => {
 
         const plusButton = cartItemClone.querySelector('.cart-plus-button');
         plusButton.id = `plus-${item.name}`;
-        plusButton.addEventListener('click', () => addToCart(item.name));
+        plusButton.addEventListener('click', () => addToCart(item.name, product.name));
 
         const minusButton = cartItemClone.querySelector('.cart-minus-button');
         minusButton.id = `minus-${item.name}`;
