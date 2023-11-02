@@ -15,8 +15,9 @@ const getCredentials = request => {
 
   if (authorizationHeader) {
     // Remove the "Basic " prefix and decode the base64 encoded string
-    const credentials = Buffer.from(authorizationHeader.split(' ')[1], 'base64').toString('utf-8');
-    const [username, password] = credentials.split(':');
+    const base64Credentials = authorizationHeader.split(' ')[1];
+    const decodedCredentials = Buffer.from(base64Credentials, 'base64').toString('utf-8');
+    const [username, password] = decodedCredentials.split(':');
     return [username, password];
   }
 
