@@ -3,7 +3,9 @@ const basicAuthChallenge = response => {
   // See:
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#the_general_http_authentication_framework
   // The first step of the challenge and response flow  as described on the webpage is done here. 
-  throw new Error('Not Implemented');
+  response.statusCode = 401; // Set the status code to 401 Unauthorized
+  response.setHeader('WWW-Authenticate', 'Basic realm="Authentication Required"');
+  response.end('Authentication Required');
 };
 
 const sendJson = (response, payload, code = 200) => {
