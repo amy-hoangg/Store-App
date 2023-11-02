@@ -13,6 +13,10 @@ const {
   updateUserRole,
 } = require("./utils/users");
 const { getCurrentUser } = require("./auth/auth");
+const fs = require("fs");
+
+const productsData = fs.readFileSync('./products.json', 'utf8');
+const products = JSON.parse(productsData);
 
 /**
  * Known API routes and their allowed methods
@@ -23,6 +27,7 @@ const { getCurrentUser } = require("./auth/auth");
 const allowedMethods = {
   "/api/register": ["POST"],
   "/api/users": ["GET"],
+  "/api/products": ["GET"],
 };
 
 /**
@@ -77,6 +82,31 @@ const handleRequest = async (request, response) => {
     const fileName =
       filePath === "/" || filePath === "" ? "index.html" : filePath;
     return renderPublic(fileName, response);
+  }
+
+  if (filePath === '/api/products' && method === 'GET') {
+    // Handle the GET request for /api/products here
+
+    const authorizationHeader = request.headers.authorization;
+    const currentUser = await getCurrentUser(request);
+
+    if (!authorizationHeader || !currentUser) {
+      // Send Basic Authentication challenge
+      return responseUtils.basicAuthChallenge(response);
+    }
+
+    // Check if the user has either admin or customer role
+    if (currentUser.role !== 'admin' && currentUser.role !== 'customer') {
+      return responseUtils.forbidden(response);
+    }
+
+    if (!acceptsJson(request)) {
+      // The client does not accept JSON, so respond with 406 Not Acceptable
+      return responseUtils.contentTypeNotAcceptable(response);
+    }
+
+    // Send the contents of products.json as a JSON response
+    return responseUtils.sendJson(response, products);
   }
 
   if (matchUserId(filePath)) {
