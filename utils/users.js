@@ -154,7 +154,7 @@ const updateUserRole = (userId, role) => {
   const user = data.users.find(user => user._id === userId);
 
   if (user) {
-    if (role === "customer" || role === "admin") {
+    if (role === 'customer' || role === 'admin') {
       user.role = role;
       return { ...user };
     } else {
