@@ -159,7 +159,17 @@ const addProductToCart = productId => {
   // but if productCount is defined
   //    key: productId
   //    data: productCount + 1
-  return getProductCountFromCart(productId);
+
+  // If the product is not in the cart, add it with a count of 1
+  if (productCount === null) {
+    sessionStorage.setItem(productId, '1');
+    return 1;
+  } else {
+    // If the product is in the cart, increment the count
+    const newCount = parseInt(productCount) + 1;
+    sessionStorage.setItem(productId, newCount.toString());
+    return newCount;
+  }
 };
 
 const decreaseProductCount = productId => {
@@ -171,6 +181,8 @@ const decreaseProductCount = productId => {
     // in the cart
     //    key: productId
     //    data: productCount - 1
+    const newCount = parseInt(productCount) - 1;
+    sessionStorage.setItem(productId, newCount.toString());
     return newCount;
   } else {
     // TODO 9.2 
@@ -178,6 +190,7 @@ const decreaseProductCount = productId => {
     // the item if its count/amount drops to zero 
     // (https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage#basic_usage)
     //    key: productId
+    sessionStorage.removeItem(productId);
     return 0;
   }
 };
@@ -192,16 +205,21 @@ const getProductCountFromCart = productId => {
   //    key: productId
   // Return the fetched product amount (the fetched
   //     value of the session storage item)
+  const count = sessionStorage.getItem(productId);
+  return count ? parseInt(count) : null;
 };
 
 const getAllProductsFromCart = () => {
-  return Object.keys(sessionStorage).reduce((array, str) => {
-    const item = {
-      name: str,
-      amount: sessionStorage.getItem(str)
-    };
-    return [...array, item];
-  }, []);
+  const products = [];
+  
+  // Iterate through session storage and collect products and their counts
+  for (let i = 0; i < sessionStorage.length; i++) {
+    const productId = sessionStorage.key(i);
+    const count = sessionStorage.getItem(productId);
+    products.push({ name: productId, amount: parseInt(count) });
+  }
+
+  return products;
 };
 
 const clearCart = () => {
@@ -210,4 +228,5 @@ const clearCart = () => {
   // items from the session storage
   // (https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage#basic_usage)
   //    key: productId
+  sessionStorage.clear();
 };
