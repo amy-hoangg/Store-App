@@ -1,7 +1,18 @@
-const responseUtils = require('./utils/responseUtils');
-const { acceptsJson, isJson, parseBodyJson } = require('./utils/requestUtils');
-const { renderPublic } = require('./utils/render');
-const { emailInUse, getAllUsers, saveNewUser, validateUser } = require('./utils/users');
+/* eslint-disable max-lines-per-function */
+/* eslint-disable complexity */
+const responseUtils = require("./utils/responseUtils");
+const { acceptsJson, isJson, parseBodyJson } = require("./utils/requestUtils");
+const { renderPublic } = require("./utils/render");
+const {
+  emailInUse,
+  getAllUsers,
+  saveNewUser,
+  validateUser,
+  deleteUserById,
+  getUserById,
+  updateUserRole,
+} = require("./utils/users");
+const { getCurrentUser } = require("./auth/auth");
 
 /**
  * Known API routes and their allowed methods
@@ -10,8 +21,8 @@ const { emailInUse, getAllUsers, saveNewUser, validateUser } = require('./utils/
  * in response to an OPTIONS request by sendOptions() (Access-Control-Allow-Methods)
  */
 const allowedMethods = {
-  '/api/register': ['POST'],
-  '/api/users': ['GET']
+  "/api/register": ["POST"],
+  "/api/users": ["GET"],
 };
 
 /**
@@ -23,10 +34,10 @@ const allowedMethods = {
 const sendOptions = (filePath, response) => {
   if (filePath in allowedMethods) {
     response.writeHead(204, {
-      'Access-Control-Allow-Methods': allowedMethods[filePath].join(','),
-      'Access-Control-Allow-Headers': 'Content-Type,Accept',
-      'Access-Control-Max-Age': '86400',
-      'Access-Control-Expose-Headers': 'Content-Type,Accept'
+      "Access-Control-Allow-Methods": allowedMethods[filePath].join(","),
+      "Access-Control-Allow-Headers": "Content-Type,Accept",
+      "Access-Control-Max-Age": "86400",
+      "Access-Control-Expose-Headers": "Content-Type,Accept",
     });
     return response.end();
   }
@@ -42,7 +53,7 @@ const sendOptions = (filePath, response) => {
  * @returns {boolean}
  */
 const matchIdRoute = (url, prefix) => {
-  const idPattern = '[0-9a-z]{8,24}';
+  const idPattern = "[0-9a-z]{8,24}";
   const regex = new RegExp(`^(/api)?/${prefix}/${idPattern}$`);
   return regex.test(url);
 };
@@ -53,17 +64,18 @@ const matchIdRoute = (url, prefix) => {
  * @param {string} url filePath
  * @returns {boolean}
  */
-const matchUserId = url => {
-  return matchIdRoute(url, 'users');
+const matchUserId = (url) => {
+  return matchIdRoute(url, "users");
 };
 
-const handleRequest = async(request, response) => {
+const handleRequest = async (request, response) => {
   const { url, method, headers } = request;
   const filePath = new URL(url, `http://${headers.host}`).pathname;
 
   // serve static files from public/ and return immediately
-  if (method.toUpperCase() === 'GET' && !filePath.startsWith('/api')) {
-    const fileName = filePath === '/' || filePath === '' ? 'index.html' : filePath;
+  if (method.toUpperCase() === "GET" && !filePath.startsWith("/api")) {
+    const fileName =
+      filePath === "/" || filePath === "" ? "index.html" : filePath;
     return renderPublic(fileName, response);
   }
 
@@ -75,16 +87,116 @@ const handleRequest = async(request, response) => {
     //  If the current user's role is not admin you can use forbidden(response) from /utils/responseUtils.js to send a reply
     // Useful methods here include:
     // - getUserById(userId) from /utils/users.js
-    // - notFound(response) from  /utils/responseUtils.js 
+    // - notFound(response) from  /utils/responseUtils.js
     // - sendJson(response,  payload)  from  /utils/responseUtils.js can be used to send the requested data in JSON format
-    throw new Error('Not Implemented');
+    // throw new Error("Not Implemented");
+
+    // View GET
+    const userId = filePath.split("/").pop();
+    const user = getUserById(userId);
+
+    if (method.toUpperCase() === "GET") {
+      const authorizationHeader = request.headers.authorization;
+      const currentUser = await getCurrentUser(request);
+      if (!authorizationHeader || !currentUser) {
+        return responseUtils.basicAuthChallenge(response);
+      }
+      if (currentUser.role === "customer") {
+        return responseUtils.forbidden(response);
+      }
+
+      if (!user) {
+        return responseUtils.notFound(response);
+      }
+
+      return responseUtils.sendJson(response, user);
+    }
+
+    // Update PUT
+    if (method.toUpperCase() === "PUT") {
+      const authorizationHeader = request.headers.authorization;
+      const currentUser = await getCurrentUser(request);
+    
+      if (!authorizationHeader || !currentUser) {
+        return responseUtils.basicAuthChallenge(response);
+      }
+    
+      if (currentUser.role !== "admin") {
+        return responseUtils.forbidden(response);
+      }
+    
+      if (!user) {
+        return responseUtils.notFound(response);
+      }
+    
+      // Parse the request body to get the updated role
+      try {
+        const body = await parseBodyJson(request);
+        if (!body.role) {
+          // Handle the case when role is missing
+          return responseUtils.badRequest(response, "Role is missing");
+        }
+    
+        // Update the user's role
+        try {
+          const updatedUser = updateUserRole(userId, body.role);
+    
+          if (updatedUser) {
+            return responseUtils.sendJson(response, updatedUser);
+          } else {
+            return responseUtils.internalServerError(response);
+          }
+        } catch (error) {
+          // Handle the "Unknown role" error here
+          return responseUtils.badRequest(response, "Unknown role");
+        }
+      } catch (error) {
+        return responseUtils.internalServerError(response, error.message);
+      }
+    }
+    
+    
+
+    // Delete
+    if (method.toUpperCase() === "DELETE") {
+      const authorizationHeader = request.headers.authorization;
+      const currentUser = await getCurrentUser(request);
+      if (!authorizationHeader || !currentUser) {
+        return responseUtils.basicAuthChallenge(response);
+      }
+      if (currentUser.role === "customer") {
+        return responseUtils.forbidden(response);
+      }
+
+      if (!user) {
+        return responseUtils.notFound(response);
+      }
+
+      else
+      {
+      // Delete the user and get the deleted user
+      const deletedUser = deleteUserById(userId);
+
+      if (deletedUser) {
+        return responseUtils.sendJson(response, deletedUser);
+      }
+      }
+    }
+
+    // Handling OPTIONS requests
+    if (method.toUpperCase === "OPTIONS") {
+      return sendOptions(filePath, response);
+    }
+
+    return responseUtils.sendJson(response, user);
   }
 
   // Default to 404 Not Found if unknown url
   if (!(filePath in allowedMethods)) return responseUtils.notFound(response);
 
   // See: http://restcookbook.com/HTTP%20Methods/options/
-  if (method.toUpperCase() === 'OPTIONS') return sendOptions(filePath, response);
+  if (method.toUpperCase() === "OPTIONS")
+    return sendOptions(filePath, response);
 
   // Check for allowable methods
   if (!allowedMethods[filePath].includes(method.toUpperCase())) {
@@ -97,33 +209,47 @@ const handleRequest = async(request, response) => {
   }
 
   // GET all users
-  if (filePath === '/api/users' && method.toUpperCase() === 'GET') {
+  if (filePath === "/api/users" && method.toUpperCase() === "GET") {
     // TODO: 8.5 Add authentication (only allowed to users with role "admin")
+    const authorizationHeader = request.headers.authorization;
+    const user = await getCurrentUser(request);
+
+    if (!authorizationHeader || !user) {
+      return responseUtils.basicAuthChallenge(response);
+    }
+
+    if (user.role === "customer") {
+      return responseUtils.forbidden(response);
+    }
+
     return responseUtils.sendJson(response, getAllUsers());
   }
 
   // register new user
-  if (filePath === '/api/register' && method.toUpperCase() === 'POST') {
+  if (filePath === "/api/register" && method.toUpperCase() === "POST") {
     // Fail if not a JSON request, don't allow non-JSON Content-Type
     if (!isJson(request)) {
-      return responseUtils.badRequest(response, 'Invalid Content-Type. Expected application/json');
+      return responseUtils.badRequest(
+        response,
+        "Invalid Content-Type. Expected application/json"
+      );
     }
 
     // TODO: 8.4 Implement registration
     // You can use parseBodyJson(request) method from utils/requestUtils.js to parse request body.
     // Useful methods here include:
-    // - validateUser(user) from /utils/users.js 
+    // - validateUser(user) from /utils/users.js
     // - emailInUse(user.email) from /utils/users.js
     // - badRequest(response, message) from /utils/responseUtils.js
     const body = await parseBodyJson(request);
     const validationErrors = validateUser(body);
 
     if (validationErrors.length > 0) {
-      return responseUtils.badRequest(response, validationErrors.join(', '));
+      return responseUtils.badRequest(response, validationErrors.join(", "));
     }
 
     if (emailInUse(body.email)) {
-      return responseUtils.badRequest(response, 'Email already in use');
+      return responseUtils.badRequest(response, "Email already in use");
     }
 
     const newUser = saveNewUser(body);
