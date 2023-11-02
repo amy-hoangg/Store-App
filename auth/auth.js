@@ -10,7 +10,25 @@ const getCurrentUser = async request => {
   // NOTE: You can import two methods which can be useful here: // - getCredentials(request) function from utils/requestUtils.js
   // - getUser(email, password) function from utils/users.js to get the currently logged in user
 
-  throw new Error('Not Implemented');
+  const { getCredentials } = require('./requestUtils'); // Import the getCredentials function
+  const { getUser } = require('./users'); // Import the getUser function
+
+  const credentials = getCredentials(request);
+
+  if (credentials) {
+    const [email, password] = credentials;
+
+    // Check if the user with the provided credentials exists
+    const user = getUser(email, password);
+
+    if (user) {
+      // User is authenticated, return the user object
+      return user;
+    }
+  }
+
+  // User is not authenticated, return null
+  return null;
 };
 
 module.exports = { getCurrentUser };
