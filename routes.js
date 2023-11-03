@@ -15,10 +15,7 @@ const {
 const { getCurrentUser } = require("./auth/auth");
 
 const fs = require("fs");
-
-const productsData = fs.readFileSync('./products.json', 'utf8');
-const products = JSON.parse(productsData);
-
+const products  = require("./products.json");
 
 /**
  * Known API routes and their allowed methods
@@ -102,8 +99,9 @@ const handleRequest = async (request, response) => {
       return responseUtils.forbidden(response);
     }
 
-    if (!acceptsJson(request)) {
-      // The client does not accept JSON, so respond with 406 Not Acceptable
+    if (!request.headers.accept || !acceptsJson(request)) {
+      // The client does not have an "Accept" header or does not accept JSON,
+      // so respond with 406 Not Acceptable
       return responseUtils.contentTypeNotAcceptable(response);
     }
 
