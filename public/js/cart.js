@@ -17,7 +17,7 @@ const decreaseCount = productId => {
   if (newCount === 0) {
     removeElement('cart-container', `cart-item-${productId}`);
   } else {
-    updateProductAmount(productId);
+    updateProductAmount(productId, newCount);
   }
 };
 
@@ -26,10 +26,9 @@ const updateProductAmount = productId => {
   // - read the amount of products in the cart, /public/js/utils.js provides getProductCountFromCart(productId)
   // - change the amount of products shown in the right element's innerText
   // Read the amount of products in the cart using getProductCountFromCart from utils.js
-  const productCount = getProductCountFromCart(productId);
   const amountElement = document.getElementById(`amount-${productId}`);
   if (amountElement) {
-    amountElement.innerText = `${productCount}x`;
+    amountElement.innerText = `${newCount}x`;
   }
 };
 
