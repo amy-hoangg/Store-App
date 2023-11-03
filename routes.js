@@ -106,7 +106,7 @@ const handleRequest = async (request, response) => {
     }
 
     // Send the contents of products as a JSON response
-    return responseUtils.sendJson(response, products);
+    return responseUtils.sendJson(response, products, 200);
   }
 
   if (matchUserId(filePath)) {
