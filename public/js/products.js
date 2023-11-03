@@ -30,26 +30,29 @@ const addToCart = (productId, productName) => {
     const products = await getJSON('/api/products');
 
     // Loop through the products and add them to the page
-    products.forEach((product) => {
-      // Clone the template
-      const productClone = productTemplate.content.cloneNode(true);
+    products.forEach((product, index) => {
+  // Clone the template
+    const productClone = productTemplate.content.cloneNode(true);
 
-      // Add product information to the template clone
-      productClone.querySelector('.product-name').textContent = product.name;
-      productClone.querySelector('.product-description').textContent = product.description;
-      productClone.querySelector('.product-price').textContent = `Price: $${product.price}`;
+  // Get product elements based on their position in the template
+   const productElements = productClone.querySelectorAll('.item-row p');
 
-      // Get the Add to cart button
-      const addToCartButton = productClone.querySelector('button');
+  // Set product information to the template elements
+   productElements[0].textContent = product.name;
+   productElements[1].textContent = product.description;
+   productElements[2].textContent = `Price: $${product.price}`;
 
-      // Add an event listener for the button's 'click' event
-      addToCartButton.addEventListener('click', () => {
-        addToCart(product._id, product.name);
-      });
+  // Get the Add to cart button
+    const addToCartButton = productClone.querySelector('button');
 
-      // Append the product to the products container
-      productsContainer.appendChild(productClone);
-    });
+  // Add an event listener for the button's 'click' event
+    addToCartButton.addEventListener('click', () => {
+      addToCart(product._id, product.name);
+  });
+
+  // Append the product to the products container
+   productsContainer.appendChild(productClone);
+});
   } catch (error) {
     console.error('Error fetching and displaying products:', error);
   }
