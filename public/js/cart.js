@@ -115,7 +115,6 @@ const placeOrder = async() => {
               console.log(`Clicked the plus button for product with ID ${productId}`);
               addToCart(productId, product.name);
             } 
-            
             else {
               console.log(`Clicked the minus button for product with ID ${productId}`);
               decreaseCount(productId);
