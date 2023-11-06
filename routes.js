@@ -15,7 +15,7 @@ const {
 const { getCurrentUser } = require("./auth/auth");
 
 const fs = require("fs");
-const products  = require("./products.json");
+const products = require("./products.json");
 
 /**
  * Known API routes and their allowed methods
@@ -83,31 +83,6 @@ const handleRequest = async (request, response) => {
     return renderPublic(fileName, response);
   }
   
-  if (filePath === '/api/products' && method === 'GET') {
-    // Handle the GET request for /api/products here
-
-    const authorizationHeader = request.headers.authorization;
-    const currentUser = await getCurrentUser(request);
-
-    if (!authorizationHeader || !currentUser) {
-      // Send Basic Authentication challenge
-      return responseUtils.basicAuthChallenge(response);
-    }
-
-    // Check if the user has either admin or customer role
-    if (currentUser.role !== 'admin' && currentUser.role !== 'customer') {
-      return responseUtils.forbidden(response);
-    }
-
-    if (!request.headers.accept || !acceptsJson(request)) {
-      // The client does not have an "Accept" header or does not accept JSON,
-      // so respond with 406 Not Acceptable
-      return responseUtils.contentTypeNotAcceptable(response);
-    }
-
-    // Send the contents of products as a JSON response
-    return responseUtils.sendJson(response, products, 200);
-  }
 
   if (matchUserId(filePath)) {
     // TODO: 8.6 Implement view, update and delete a single user by ID (GET, PUT, DELETE)
@@ -237,7 +212,32 @@ const handleRequest = async (request, response) => {
   if (!acceptsJson(request)) {
     return responseUtils.contentTypeNotAcceptable(response);
   }
+  
+  if (filePath === '/api/products' && method === 'GET') {
+    // Handle the GET request for /api/products here
 
+    const authorizationHeader = request.headers.authorization;
+    const currentUser = await getCurrentUser(request);
+
+    if (!authorizationHeader || !currentUser) {
+      // Send Basic Authentication challenge
+      return responseUtils.basicAuthChallenge(response);
+    }
+
+    // Check if the user has either admin or customer role
+    if (currentUser.role !== 'admin' && currentUser.role !== 'customer') {
+      return responseUtils.forbidden(response);
+    }
+
+    //if (!acceptsJson(request)) {
+      // The client does not have an "Accept" header or does not accept JSON,
+      // so respond with 406 Not Acceptable
+      //return responseUtils.contentTypeNotAcceptable(response);
+    //}
+
+    // Send the contents of products as a JSON response
+    return responseUtils.sendJson(response, products, 200);
+  }
   // GET all users
   if (filePath === "/api/users" && method.toUpperCase() === "GET") {
     // TODO: 8.5 Add authentication (only allowed to users with role "admin")
