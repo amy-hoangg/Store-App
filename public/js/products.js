@@ -41,7 +41,7 @@ const addToCart = (productId, productName) => {
       // Set product information to the template elements
       productName.textContent = product.name;
       productDescription.textContent = product.description;
-      productPrice.textContent = `Price: $${product.price}`;
+      productPrice.textContent = product.price;
 
       // Get the Add to cart button
       const addToCartButton = productClone.querySelector("button");
