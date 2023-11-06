@@ -36,7 +36,7 @@ const addToCart = (productId, productName) => {
     const products = await getJSON("/api/products");
 
     // Loop through the products and add them to the page
-    products.forEach((product, index) => {
+    products.forEach((product) => {
       // Clone the template
       const productClone = productTemplate.content.cloneNode(true);
 

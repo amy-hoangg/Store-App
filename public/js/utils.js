@@ -18,9 +18,12 @@
  * @param {string} url resource url on the server
  * @returns {Promise<*>} promise that resolves to the parsed JSON
  */
-const getJSON = async url => {
-  const response = await fetch(url, { method: 'GET', headers: { Accept: 'application/json' } });
-  if (!response.ok) throw new Error('Network response was not OK');
+const getJSON = async (url) => {
+  const response = await fetch(url, {
+    method: "GET",
+    headers: { Accept: "application/json" },
+  });
+  if (!response.ok) throw new Error("Network response was not OK");
   return await response.json();
 };
 
@@ -35,23 +38,23 @@ const getJSON = async url => {
  * @param {Object|Array} data payload data to be sent to the server as JSON
  * @returns {Promise<*>} promise that resolves to the parsed JSON
  */
-const postOrPutJSON = async(url, method, data = {}) => {
+const postOrPutJSON = async (url, method, data = {}) => {
   method = method.toUpperCase();
-  if (method !== 'POST' && method !== 'PUT') {
-    throw 'Invalid method! Valid methods are POST and PUT!';
+  if (method !== "POST" && method !== "PUT") {
+    throw "Invalid method! Valid methods are POST and PUT!";
   }
 
   const response = await fetch(url, {
     method,
-    credentials: 'same-origin',
+    credentials: "same-origin",
     headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
+      Accept: "application/json",
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
   });
 
-  if (!response.ok) throw new Error('Network response was not OK');
+  if (!response.ok) throw new Error("Network response was not OK");
   if (response.status < 200 || response.status > 400) {
     throw new Error(`Received "${response.status} ${response.statusText}"`);
   }
@@ -68,18 +71,20 @@ const postOrPutJSON = async(url, method, data = {}) => {
  * @param {string} url resource url on the server
  * @returns {Promise<*>} promise that resolves to the parsed JSON
  */
-const deleteResource = async url => {
+const deleteResource = async (url) => {
   // TODO: 8.6 Implement this
   // throw new Error('Not Implemented');
   const response = await fetch(url, {
-    method: 'DELETE',
+    method: "DELETE",
     headers: {
-      Accept: 'application/json',
+      Accept: "application/json",
     },
   });
 
   if (!response.ok) {
-    throw new Error(`Network response was not OK. Received "${response.status} ${response.statusText}"`);
+    throw new Error(
+      `Network response was not OK. Received "${response.status} ${response.statusText}"`
+    );
   }
 
   return await response.json();
@@ -95,12 +100,7 @@ const deleteResource = async url => {
 const generateId = () => {
   // Shamelessly borrowed from a Gist. See:
   // https://gist.github.com/gordonbrander/2230317
-  return (
-    '_' +
-    Math.random()
-    .toString(36)
-    .substr(2, 9)
-  );
+  return "_" + Math.random().toString(36).substr(2, 9);
 };
 
 /**
@@ -117,14 +117,16 @@ const createNotification = (message, containerId, isSuccess = true) => {
   const container = document.getElementById(containerId);
 
   // Create new p element to hold text
-  const newParagraph = document.createElement('p');
+  const newParagraph = document.createElement("p");
 
   // Create unique id for the notification so that it can easily be removed after timeout
   const notificationId = generateId();
   newParagraph.id = notificationId;
 
   // Set CSS class for the paragraph based on the isSuccess variable
-  newParagraph.classList.add(isSuccess ? 'background-lightgreen' : 'background-red');
+  newParagraph.classList.add(
+    isSuccess ? "background-lightgreen" : "background-red"
+  );
 
   // Add message test inside the paragraph and append the paragraph to the container
   newParagraph.append(document.createTextNode(message));
@@ -144,16 +146,18 @@ const createNotification = (message, containerId, isSuccess = true) => {
  */
 const removeElement = (containerId, elementId) => {
   const container = document.getElementById(containerId);
-  container.querySelectorAll(`#${elementId}`).forEach(element => element.remove());
+  container
+    .querySelectorAll(`#${elementId}`)
+    .forEach((element) => element.remove());
 };
 
-const addProductToCart = productId => {
+const addProductToCart = (productId) => {
   const productCount = getProductCountFromCart(productId);
   // TODO 9.2
   // Use sessionStorage's setItem('key', 'value')
   // (https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage#basic_usage)
   // to set the product data to the session storage
-  // if the productCount is undefined 
+  // if the productCount is undefined
   //    key: productId
   //    data: 1
   // but if productCount is defined
@@ -162,9 +166,11 @@ const addProductToCart = productId => {
 
   // If the product is not in the cart, add it with a count of 1
   if (productCount === null) {
-    sessionStorage.setItem(productId, '1');
+    sessionStorage.setItem(productId, "1");
     return 1;
-  } else {
+  } 
+  
+  else {
     // If the product is in the cart, increment the count
     const newCount = parseInt(productCount) + 1;
     sessionStorage.setItem(productId, newCount.toString());
@@ -172,22 +178,25 @@ const addProductToCart = productId => {
   }
 };
 
-const decreaseProductCount = productId => {
-  const productCount = getProductCountFromCart(productId);
+const decreaseProductCount = (productId) => {
+  const productCount = getProductCountFromCart(productId); //get from storage session
   if (productCount > 1) {
     // TODO 9.2
     // use sessionStorage's setItem('key', 'value')
-    // (https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage#basic_usage) to remove 1 from the product amount
+    // (https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage#basic_usage) 
+    //to remove 1 from the product amount
     // in the cart
     //    key: productId
     //    data: productCount - 1
     const newCount = parseInt(productCount) - 1;
     sessionStorage.setItem(productId, newCount.toString());
     return newCount;
-  } else {
-    // TODO 9.2 
-    // use sessionStorage's removeItem('key') to remove 
-    // the item if its count/amount drops to zero 
+  } 
+  
+  else {
+    // TODO 9.2
+    // use sessionStorage's removeItem('key') to remove
+    // the item if its count/amount drops to zero
     // (https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage#basic_usage)
     //    key: productId
     sessionStorage.removeItem(productId);
@@ -195,12 +204,12 @@ const decreaseProductCount = productId => {
   }
 };
 
-const getProductCountFromCart = productId => {
+const getProductCountFromCart = (productId) => {
   // TODO 9.2
   // use sessionStorage's getItem('key') to to fetch and
-  // return the storage item product's value/amount 
+  // return the storage item product's value/amount
   // from the session storage
-  // with the productId as the key 
+  // with the productId as the key
   // (https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage#basic_usage)
   //    key: productId
   // Return the fetched product amount (the fetched
@@ -211,7 +220,7 @@ const getProductCountFromCart = productId => {
 
 const getAllProductsFromCart = () => {
   const products = [];
-  
+
   // Iterate through session storage and collect products and their counts
   for (let i = 0; i < sessionStorage.length; i++) {
     const productId = sessionStorage.key(i);
@@ -224,7 +233,7 @@ const getAllProductsFromCart = () => {
 
 const clearCart = () => {
   // TODO 9.2
-  // use sessionStorage's clear() to remove 
+  // use sessionStorage's clear() to remove
   // items from the session storage
   // (https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage#basic_usage)
   //    key: productId
