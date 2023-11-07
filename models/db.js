@@ -1,17 +1,27 @@
 const mongoose = require('mongoose');
+require('dotenv').config();
 
 /**
  * Get database connect URL.
  *
- * Returns the MongoDB connection URL from DBURL environment variable,
- * or if the environment variable is not defined, return the default URL
+ * Returns the MongoDB connection URL
+ *  from DBURL environment variable,
+ * or if the environment variable is not defined, 
+ * return the default URL
  * mongodb://localhost:27017/WebShopDb
  *
  * @returns {string} connection URL
  */
 const getDbUrl = () => {
   // TODO: 9.4 Implement this
-  throw new Error('Implement this');
+  // Check if the DBURL environment variable is defined
+  if (process.env.DBURL) {
+    // If defined, return the value from the environment variable
+    return process.env.DBURL;
+  } else {
+    // If not defined, return the default URL
+    return 'mongodb://localhost:27017/WebShopDb';
+  }
 };
 
 function connectDB() {
