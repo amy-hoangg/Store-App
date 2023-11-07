@@ -2,7 +2,8 @@ const addToCart = productId => {
   // TODO 9.2
   // use addProductToCart(), available already from /public/js/utils.js
   // call updateProductAmount(productId) from this file
-  // Use the addProductToCart function from utils.js to add the product to the cart
+  // Use the addProductToCart function from utils.js 
+  //to add the product to the cart
   addProductToCart(productId);
   // Update the product amount in the UI
   updateProductAmount(productId);
@@ -16,46 +17,74 @@ const decreaseCount = productId => {
   ///public/js/utils.js provides removeElement = (containerId, elementId
   // Decrease the amount of products in 
   // the cart using decreaseProductCount from utils.js
+  // Decrease the amount of products in the cart using 
+  //decreaseProductCount from utils.js
   const newCount = decreaseProductCount(productId);
-  if (newCount === 0) {
-    removeElement('cart-container', `cart-item-${productId}`);
-  } 
+
+  // TODO 9.2
+  // Check if newCount is greater than 0 before updating the UI
+  if (newCount > 0) {
+    // Read the amount of products in the cart using getProductCountFromCart from utils.js
+    const amountElement = document.getElementById(`amount-${productId}`);
+    if (amountElement) {
+      amountElement.innerText = `${newCount}x`;
+    }
+  }
   else {
-    updateProductAmount(productId, newCount);
+    // Remove product from the UI if its count drops to zero using removeElement
+    removeElement('cart-container', `cart-item-${productId}`);
   }
 };
 
 const updateProductAmount = productId => {
   // TODO 9.2
-  // - read the amount of products in the cart, /public/js/utils.js provides getProductCountFromCart(productId)
+  // - read the amount of products in the cart, 
+  ///public/js/utils.js provides getProductCountFromCart(productId)
   // - change the amount of products shown in the right element's innerText
   // Read the amount of products in the cart using getProductCountFromCart from utils.js
-  const amountElement = document.getElementById(`amount-${productId}`);
-  if (amountElement) {
-    amountElement.innerText = `${newCount}x`;
+  // Read the amount of products in the cart using getProductCountFromCart from utils.js
+  const productCount = getProductCountFromCart(productId);
+  if (productCount !== null) {
+    // Find the amount element with the appropriate id
+    const amountElement = document.getElementById(`amount-${productId}`);
+    if (amountElement) {
+      // Update the inner text with the product count followed by 'x'
+      amountElement.innerText = `${productCount}x`;
+    }
   }
 };
 
 const placeOrder = async() => {
   // TODO 9.2
-  // Get all products from the cart, /public/js/utils.js provides getAllProductsFromCart()
-  // show the user a notification: /public/js/utils.js provides createNotification = (message, containerId, isSuccess = true)
+  // Get all products from the cart, 
+  ///public/js/utils.js provides getAllProductsFromCart()
+  // show the user a notification: /public/js/utils.js 
+  //provides createNotification = (message, containerId, isSuccess = true)
   // for each of the products in the cart remove them, /public/js/utils.js provides removeElement(containerId, elementId)
-  // Get all products from the cart using getAllProductsFromCart from utils.js
-  const cartItems = getAllProductsFromCart();
+  try {
+    // Step 1: Get all products from the cart
+    const cartProducts = getAllProductsFromCart();
 
-  if (cartItems.length === 0) {
-    createNotification('Your cart is empty!', 'cart-notifications-container', false);
-    return;
+    // Step 2: Show a notification to the user
+    const notificationContainerId = 'notification-container';
+    if (cartProducts.length > 0) {
+      createNotification('Order placed successfully!', notificationContainerId, true);
+    } else {
+      createNotification('No products in the cart to place an order.', notificationContainerId, false);
+      return;
+    }
+
+    // Step 3: Remove each product from the cart
+    const cartContainerId = 'cart-container';
+    cartProducts.forEach((product) => {
+      const productId = product.id;
+      removeElement(cartContainerId, productId);
+    });
+  } 
+  catch (error) {
+    console.error('An error occurred while placing the order:', error);
+    createNotification('Failed to place the order. Please try again later.', notificationContainerId, false);
   }
-
-  createNotification('Successfully created an order!', 'cart-notifications-container', true);
-
-  cartItems.forEach((item) => {
-    removeElement('cart-container', `cart-item-${item.name}`);
-  });
-
-  clearCart();
 };
 
 
@@ -96,9 +125,16 @@ const placeOrder = async() => {
     
       if (product) {
         const productId = product._id; // Get the product ID
+        cartItemClone.querySelector('.item-row').id = `cart-item-${productId}`;
+
         cartItemClone.querySelector('.product-name').textContent = product.name;
-        cartItemClone.querySelector('.product-price').textContent = `Price: $${product.price}`;
+        cartItemClone.querySelector('.product-name').id = `name-${productId}`;
+
+        cartItemClone.querySelector('.product-price').textContent = product.price;
+        cartItemClone.querySelector('.product-price').id = `price-${productId}`;
+
         const amountElement = cartItemClone.querySelector('.product-amount');
+        cartItemClone.querySelector('.product-amount').id = `amount-${productId}`;
         amountElement.innerText = `${item.amount}x`;
     
         // Select all buttons with the 'cart-minus-plus-button' class within the cloned cart item
@@ -109,6 +145,7 @@ const placeOrder = async() => {
           const buttonType = index === 0 ? 'plus' : 'minus';
           button.id = `${buttonType}-${productId}`;
     
+          
           // Add event listeners based on the button type
           button.addEventListener('click', () => {
             if (buttonType === 'plus') {
@@ -131,8 +168,10 @@ const placeOrder = async() => {
       }
     });
     
-  } catch (error) {
+  } 
+  catch (error) {
     console.error('Error fetching and displaying cart items:', error);
   }
 })();
+
 
