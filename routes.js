@@ -3,15 +3,6 @@
 const responseUtils = require("./utils/responseUtils");
 const { acceptsJson, isJson, parseBodyJson } = require("./utils/requestUtils");
 const { renderPublic } = require("./utils/render");
-const {
-  emailInUse,
-  getAllUsers,
-  saveNewUser,
-  validateUser,
-  deleteUserById,
-  getUserById,
-  updateUserRole,
-} = require("./utils/users");
 const { getCurrentUser } = require("./auth/auth");
 const User = require('./models/user');
 
@@ -189,7 +180,7 @@ const handleRequest = async (request, response) => {
       const deletedUser = User.deleteOne({ _id: userId });
 
       if (deletedUser) {
-        return responseUtils.sendJson(response, deletedUser);
+        return responseUtils.sendJson(response, deletedUser.toObject());
       }
       }
     }
@@ -281,9 +272,6 @@ const handleRequest = async (request, response) => {
     // const validationErrors = validateUser(body);
     const errors = [];
     const emailUser = await User.findOne({email: body.email}).exec();
-    const nameUser = await User.findOne(body.name).exec();
-    const roleUser = await User.findOne(body.role).exec();
-    const passwordUser = await User.findOne(body.password).exec();
 
     if (!body.name) errors.push('Missing name');
     if (!body.email) errors.push('Missing email');
