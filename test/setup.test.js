@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const dbConfig = {
-  host: '127.0.0.1' ,
+  host: '127.0.0.1',
   port: 27017,
   db: 'Test_WebShopDb'
 };

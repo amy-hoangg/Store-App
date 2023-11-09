@@ -28,7 +28,7 @@ const getCurrentUser = async request => {
     
 
     if (currentUser && await currentUser.checkPassword(password)) {
-      return currentUser.toObject();
+      return currentUser;
     }
     if (!currentUser) {
       return null;
