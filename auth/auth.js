@@ -1,5 +1,5 @@
 const requestUtils = require('../utils/requestUtils');
-const {getUser} = require('../utils/users');
+const User = require('../models/user');
 /**
  * Get current user based on the request headers
  *
@@ -15,14 +15,23 @@ const getCurrentUser = async request => {
   // - getUser(email, password) function from utils/users.js to get the currently logged in user
   const credentials = requestUtils.getCredentials(request);
 
+  // 9.6: if no credentials are found, return null
+  if (!credentials) {
+    return null;
+  }
+
   if (credentials) {
     const [username, password] = credentials;
 
     // Call the getUser function to get the currently logged in user
-    const currentUser = getUser(username, password);
+    const currentUser = User.findOne(username);
+    
 
-    if (currentUser) {
-      return currentUser;
+    if (currentUser && await currentUser.checkPassword(password)) {
+      return currentUser.toObject();
+    }
+    if (!currentUser) {
+      return null;
     }
   }
   return null;
