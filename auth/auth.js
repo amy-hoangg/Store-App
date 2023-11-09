@@ -21,14 +21,14 @@ const getCurrentUser = async request => {
   }
 
   if (credentials) {
-    const [username, password] = credentials;
+    const [email, password] = credentials;
 
     // Call the getUser function to get the currently logged in user
-    const currentUser = User.findOne(username);
+    const currentUser = User.findOne(email);
     
 
     if (currentUser && await currentUser.checkPassword(password)) {
-      return currentUser;
+      return currentUser.toObject();
     }
     if (!currentUser) {
       return null;

@@ -292,7 +292,7 @@ const handleRequest = async (request, response) => {
 
 
     if (errors.length > 0) {
-      return responseUtils.badRequest(response, validationErrors.join(", "));
+      return responseUtils.badRequest(response, errors.join(", "));
     }
 
     if (emailUser) {
