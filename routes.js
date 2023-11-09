@@ -147,7 +147,7 @@ const handleRequest = async (request, response) => {
         // Update the user's role
         try {
           //const updatedUser = updateUserRole(userId, body.role);
-          const updatedUser = User.findById(userId).exec();
+          const updatedUser = await User.findById(userId).exec();
           updatedUser.role = body.role;
           await updatedUser.save();
           

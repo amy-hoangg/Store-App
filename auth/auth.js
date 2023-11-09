@@ -24,7 +24,7 @@ const getCurrentUser = async request => {
     const [email, password] = credentials;
 
     // Call the getUser function to get the currently logged in user
-    const currentUser = User.findOne(email);
+    const currentUser = await User.findOne(email);
     
 
     if (currentUser && await currentUser.checkPassword(password)) {
