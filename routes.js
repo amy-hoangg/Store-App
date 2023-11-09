@@ -280,7 +280,7 @@ const handleRequest = async (request, response) => {
     const body = await parseBodyJson(request);
     // const validationErrors = validateUser(body);
     const errors = [];
-    const emailUser = await User.findOne(body.email).exec();
+    const emailUser = await User.findOne({email: body.email}).exec();
     const nameUser = await User.findOne(body.name).exec();
     const roleUser = await User.findOne(body.role).exec();
     const passwordUser = await User.findOne(body.password).exec();
