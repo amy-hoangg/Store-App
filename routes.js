@@ -177,10 +177,11 @@ const handleRequest = async (request, response) => {
       {
       // Delete the user and get the deleted user
       // const deletedUser = deleteUserById(userId);
+      const userToDelete = await User.findById(userId);
       const deletedUser = await User.deleteOne({ _id: userId });
 
       if (deletedUser) {
-        return responseUtils.sendJson(response, deletedUser.toJSON());
+        return responseUtils.sendJson(response, userToDelete);
       }
       }
     }
@@ -292,6 +293,7 @@ const handleRequest = async (request, response) => {
 
     // const newUser = saveNewUser(body);
     const newUser = new User(body);
+    newUser.role = 'customer';
     await newUser.save();
     responseUtils.sendJson(response, newUser, 201);
   }
