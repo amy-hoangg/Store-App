@@ -180,7 +180,7 @@ const handleRequest = async (request, response) => {
       const deletedUser = await User.deleteOne({ _id: userId });
 
       if (deletedUser) {
-        return responseUtils.sendJson(response, deletedUser.toObject());
+        return responseUtils.sendJson(response, deletedUser);
       }
       }
     }
@@ -272,14 +272,11 @@ const handleRequest = async (request, response) => {
     // const validationErrors = validateUser(body);
     const errors = [];
     const emailUser = await User.findOne({email: body.email}).exec();
-    const data = {
-      roles: ['admin', 'customer'],
-    };
 
     if (!body.name) errors.push('Missing name');
     if (!body.email) errors.push('Missing email');
     if (!body.password) errors.push('Missing password');
-    if (body.role && !data.roles.includes(body.role)) errors.push('Unknown role');
+    if (body.role && !body.roles.includes(body.role)) errors.push('Unknown role');
 
 
     if (errors.length > 0) {
