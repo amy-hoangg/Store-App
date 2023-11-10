@@ -3,16 +3,8 @@
 const responseUtils = require("./utils/responseUtils");
 const { acceptsJson, isJson, parseBodyJson } = require("./utils/requestUtils");
 const { renderPublic } = require("./utils/render");
-const {
-  emailInUse,
-  getAllUsers,
-  saveNewUser,
-  validateUser,
-  deleteUserById,
-  getUserById,
-  updateUserRole,
-} = require("./utils/users");
 const { getCurrentUser } = require("./auth/auth");
+const User = require('./models/user');
 
 const fs = require("fs");
 const products = require("./products.json");
@@ -98,7 +90,8 @@ const handleRequest = async (request, response) => {
 
     // View GET
     const userId = filePath.split("/").pop();
-    const user = getUserById(userId);
+    //const user = getUserById(userId);
+    const user = await User.findById(userId).exec();
 
     if (method.toUpperCase() === "GET") {
       const authorizationHeader = request.headers.authorization;
@@ -144,8 +137,11 @@ const handleRequest = async (request, response) => {
     
         // Update the user's role
         try {
-          const updatedUser = updateUserRole(userId, body.role);
-    
+          //const updatedUser = updateUserRole(userId, body.role);
+          const updatedUser = await User.findById(userId).exec();
+          updatedUser.role = body.role;
+          await updatedUser.save();
+          
           if (updatedUser) {
             return responseUtils.sendJson(response, updatedUser);
           } else {
@@ -180,10 +176,12 @@ const handleRequest = async (request, response) => {
       else
       {
       // Delete the user and get the deleted user
-      const deletedUser = deleteUserById(userId);
+      // const deletedUser = deleteUserById(userId);
+      const userToDelete = await User.findById(userId);
+      const deletedUser = await User.deleteOne({ _id: userId });
 
       if (deletedUser) {
-        return responseUtils.sendJson(response, deletedUser);
+        return responseUtils.sendJson(response, userToDelete);
       }
       }
     }
@@ -251,8 +249,8 @@ const handleRequest = async (request, response) => {
     if (user.role === "customer") {
       return responseUtils.forbidden(response);
     }
-
-    return responseUtils.sendJson(response, getAllUsers());
+    const users = await User.find({});
+    return responseUtils.sendJson(response, users);
   }
 
   // register new user
@@ -272,17 +270,31 @@ const handleRequest = async (request, response) => {
     // - emailInUse(user.email) from /utils/users.js
     // - badRequest(response, message) from /utils/responseUtils.js
     const body = await parseBodyJson(request);
-    const validationErrors = validateUser(body);
+    // const validationErrors = validateUser(body);
+    const errors = [];
+    const emailUser = await User.findOne({email: body.email}).exec();
+    const data = {
+      roles: ['customer', 'admin']
+    };
 
-    if (validationErrors.length > 0) {
-      return responseUtils.badRequest(response, validationErrors.join(", "));
+    if (!body.name) errors.push('Missing name');
+    if (!body.email) errors.push('Missing email');
+    if (!body.password) errors.push('Missing password');
+    if (body.role && !data.roles.includes(body.role)) errors.push('Unknown role');
+
+
+    if (errors.length > 0) {
+      return responseUtils.badRequest(response, errors.join(", "));
     }
 
-    if (emailInUse(body.email)) {
+    if (emailUser) {
       return responseUtils.badRequest(response, "Email already in use");
     }
 
-    const newUser = saveNewUser(body);
+    // const newUser = saveNewUser(body);
+    const newUser = new User(body);
+    newUser.role = 'customer';
+    await newUser.save();
     responseUtils.sendJson(response, newUser, 201);
   }
 };

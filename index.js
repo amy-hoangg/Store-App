@@ -1,3 +1,9 @@
+require('dotenv').config();
+const { connectDB } = require('./models/db');
+
+// Connect to the database immediately after reading the .env file
+connectDB();
+
 const http = require('http');
 const { handleRequest } = require('./routes');
 
