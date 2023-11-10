@@ -177,7 +177,7 @@ const handleRequest = async (request, response) => {
       {
       // Delete the user and get the deleted user
       // const deletedUser = deleteUserById(userId);
-      const deletedUser = User.deleteOne({ _id: userId });
+      const deletedUser = await User.deleteOne({ _id: userId });
 
       if (deletedUser) {
         return responseUtils.sendJson(response, deletedUser.toObject());
@@ -272,6 +272,9 @@ const handleRequest = async (request, response) => {
     // const validationErrors = validateUser(body);
     const errors = [];
     const emailUser = await User.findOne({email: body.email}).exec();
+    const data = {
+      roles: ['admin', 'customer'],
+    };
 
     if (!body.name) errors.push('Missing name');
     if (!body.email) errors.push('Missing email');
