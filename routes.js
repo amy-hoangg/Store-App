@@ -1,6 +1,6 @@
 /* eslint-disable max-lines-per-function */
 /* eslint-disable complexity */
-const responseUtils = require("./utils/responseUtils");
+const responseUtils = require('./utils/responseUtils');
 const { acceptsJson, isJson, parseBodyJson } = require("./utils/requestUtils");
 const { renderPublic } = require("./utils/render");
 const { getCurrentUser } = require("./auth/auth");
@@ -8,6 +8,9 @@ const User = require('./models/user');
 
 const fs = require("fs");
 const products = require("./products.json");
+
+const { getAllProducts } = require('./controllers/products');
+const { getAllUsers, registerUser, deleteUser, viewUser, updateUser } = require('./controllers/users');
 
 /**
  * Known API routes and their allowed methods
@@ -90,100 +93,37 @@ const handleRequest = async (request, response) => {
 
     // View GET
     const userId = filePath.split("/").pop();
-    //const user = getUserById(userId);
     const user = await User.findById(userId).exec();
+    const currentUser = await getCurrentUser(request);
 
     if (method.toUpperCase() === "GET") {
-      const authorizationHeader = request.headers.authorization;
-      const currentUser = await getCurrentUser(request);
-      if (!authorizationHeader || !currentUser) {
-        return responseUtils.basicAuthChallenge(response);
+      try {
+        await viewUser(request, response, userId, currentUser);
+      } catch (error) {
+        responseUtils.internalServerError(response);
       }
-      if (currentUser.role === "customer") {
-        return responseUtils.forbidden(response);
-      }
-
-      if (!user) {
-        return responseUtils.notFound(response);
-      }
-
-      return responseUtils.sendJson(response, user);
+      return;
     }
 
     // Update PUT
     if (method.toUpperCase() === "PUT") {
-      const authorizationHeader = request.headers.authorization;
-      const currentUser = await getCurrentUser(request);
-    
-      if (!authorizationHeader || !currentUser) {
-        return responseUtils.basicAuthChallenge(response);
-      }
-    
-      if (currentUser.role !== "admin") {
-        return responseUtils.forbidden(response);
-      }
-    
-      if (!user) {
-        return responseUtils.notFound(response);
-      }
-    
-      // Parse the request body to get the updated role
+      const body = await parseBodyJson(request);
       try {
-        const body = await parseBodyJson(request);
-        if (!body.role) {
-          // Handle the case when role is missing
-          return responseUtils.badRequest(response, "Role is missing");
-        }
-    
-        // Update the user's role
-        try {
-          //const updatedUser = updateUserRole(userId, body.role);
-          const updatedUser = await User.findById(userId).exec();
-          updatedUser.role = body.role;
-          await updatedUser.save();
-          
-          if (updatedUser) {
-            return responseUtils.sendJson(response, updatedUser);
-          } else {
-            return responseUtils.internalServerError(response);
-          }
-        } catch (error) {
-          // Handle the "Unknown role" error here
-          return responseUtils.badRequest(response, "Unknown role");
-        }
+        await updateUser(request, response, userId, currentUser, body);
       } catch (error) {
-        return responseUtils.internalServerError(response, error.message);
+        responseUtils.internalServerError(response);
       }
+      return;
     }
     
-    
-
     // Delete
     if (method.toUpperCase() === "DELETE") {
-      const authorizationHeader = request.headers.authorization;
-      const currentUser = await getCurrentUser(request);
-      if (!authorizationHeader || !currentUser) {
-        return responseUtils.basicAuthChallenge(response);
+      try {
+        await deleteUser(request, response, userId, currentUser);
+      } catch (error) {
+        responseUtils.internalServerError(response);
       }
-      if (currentUser.role === "customer") {
-        return responseUtils.forbidden(response);
-      }
-
-      if (!user) {
-        return responseUtils.notFound(response);
-      }
-
-      else
-      {
-      // Delete the user and get the deleted user
-      // const deletedUser = deleteUserById(userId);
-      const userToDelete = await User.findById(userId);
-      const deletedUser = await User.deleteOne({ _id: userId });
-
-      if (deletedUser) {
-        return responseUtils.sendJson(response, userToDelete);
-      }
-      }
+      return;
     }
 
     // Handling OPTIONS requests
@@ -213,44 +153,23 @@ const handleRequest = async (request, response) => {
   
   if (filePath === '/api/products' && method === 'GET') {
     // Handle the GET request for /api/products here
-
-    const authorizationHeader = request.headers.authorization;
-    const currentUser = await getCurrentUser(request);
-
-    if (!authorizationHeader || !currentUser) {
-      // Send Basic Authentication challenge
-      return responseUtils.basicAuthChallenge(response);
+    try {
+      await getAllProducts(request, response);
+    } catch (error) {
+      responseUtils.internalServerError(response);
     }
-
-    // Check if the user has either admin or customer role
-    if (currentUser.role !== 'admin' && currentUser.role !== 'customer') {
-      return responseUtils.forbidden(response);
-    }
-
-    //if (!acceptsJson(request)) {
-      // The client does not have an "Accept" header or does not accept JSON,
-      // so respond with 406 Not Acceptable
-      //return responseUtils.contentTypeNotAcceptable(response);
-    //}
-
-    // Send the contents of products as a JSON response
-    return responseUtils.sendJson(response, products, 200);
+    return;
   }
+
   // GET all users
   if (filePath === "/api/users" && method.toUpperCase() === "GET") {
     // TODO: 8.5 Add authentication (only allowed to users with role "admin")
-    const authorizationHeader = request.headers.authorization;
-    const user = await getCurrentUser(request);
-
-    if (!authorizationHeader || !user) {
-      return responseUtils.basicAuthChallenge(response);
+    try {
+      await getAllUsers(request, response);
+    } catch (error) {
+      responseUtils.internalServerError(response);
     }
-
-    if (user.role === "customer") {
-      return responseUtils.forbidden(response);
-    }
-    const users = await User.find({});
-    return responseUtils.sendJson(response, users);
+    return;
   }
 
   // register new user
@@ -270,32 +189,12 @@ const handleRequest = async (request, response) => {
     // - emailInUse(user.email) from /utils/users.js
     // - badRequest(response, message) from /utils/responseUtils.js
     const body = await parseBodyJson(request);
-    // const validationErrors = validateUser(body);
-    const errors = [];
-    const emailUser = await User.findOne({email: body.email}).exec();
-    const data = {
-      roles: ['customer', 'admin']
-    };
-
-    if (!body.name) errors.push('Missing name');
-    if (!body.email) errors.push('Missing email');
-    if (!body.password) errors.push('Missing password');
-    if (body.role && !data.roles.includes(body.role)) errors.push('Unknown role');
-
-
-    if (errors.length > 0) {
-      return responseUtils.badRequest(response, errors.join(", "));
+    try {
+      await registerUser(request, response, body);
+    } catch (error) {
+      responseUtils.internalServerError(response);
     }
-
-    if (emailUser) {
-      return responseUtils.badRequest(response, "Email already in use");
-    }
-
-    // const newUser = saveNewUser(body);
-    const newUser = new User(body);
-    newUser.role = 'customer';
-    await newUser.save();
-    responseUtils.sendJson(response, newUser, 201);
+    return;
   }
 };
 
