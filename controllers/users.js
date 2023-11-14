@@ -1,11 +1,26 @@
+const responseUtils = require('./utils/responseUtils');
+const { getCurrentUser } = require("./auth/auth");
+const User = require('./models/user');
 /**
  * Send all users as JSON
  *
  * @param {http.ServerResponse} response
  */
-const getAllUsers = async response => {
+const getAllUsers = async (request, response) => {
   // TODO: 10.2 Implement this
-  throw new Error('Not Implemented');
+  //throw new Error('Not Implemented');
+  const authorizationHeader = request.headers.authorization;
+    const user = await getCurrentUser(request);
+
+    if (!authorizationHeader || !user) {
+      return responseUtils.basicAuthChallenge(response);
+    }
+
+    if (user.role === "customer") {
+      return responseUtils.forbidden(response);
+    }
+    const users = await User.find({});
+    return responseUtils.sendJson(response, users);
 };
 
 /**
@@ -15,9 +30,33 @@ const getAllUsers = async response => {
  * @param {string} userId
  * @param {Object} currentUser (mongoose document object)
  */
-const deleteUser = async(response, userId, currentUser) => {
+const deleteUser = async(request, response, userId, currentUser) => {
   // TODO: 10.2 Implement this
-  throw new Error('Not Implemented');
+  // throw new Error('Not Implemented');
+  const authorizationHeader = request.headers.authorization;
+  const user = await User.findById(userId).exec();
+  if (!authorizationHeader || !currentUser) {
+    return responseUtils.basicAuthChallenge(response);
+  }
+  if (currentUser.role === "customer") {
+    return responseUtils.forbidden(response);
+  }
+  if (currentUser._id.equals(userId)) {
+    return responseUtils.badRequest(response, "Cannot delete your own data");
+  }
+  if (!user) {
+    return responseUtils.notFound(response);
+  }
+
+  else
+  {
+  const userToDelete = await User.findById(userId);
+  const deletedUser = await User.deleteOne({ _id: userId });
+
+  if (deletedUser) {
+    return responseUtils.sendJson(response, userToDelete);
+  }
+  }
 };
 
 /**
@@ -28,9 +67,55 @@ const deleteUser = async(response, userId, currentUser) => {
  * @param {Object} currentUser (mongoose document object)
  * @param {Object} userData JSON data from request body
  */
-const updateUser = async(response, userId, currentUser, userData) => {
+const updateUser = async(request, response, userId, currentUser, userData) => {
   // TODO: 10.2 Implement this
-  throw new Error('Not Implemented');
+  // throw new Error('Not Implemented');
+  const authorizationHeader = request.headers.authorization;
+  const user = await User.findById(userId).exec(); 
+  if (!authorizationHeader || !currentUser) {
+    return responseUtils.basicAuthChallenge(response);
+  }
+    
+  if (currentUser.role !== "admin") {
+    return responseUtils.forbidden(response);
+  }
+    
+  if (!user) {
+    return responseUtils.notFound(response);
+  }
+  // Check if the user is trying to update their own data
+  if (currentUser._id.equals(userId)) {
+    return responseUtils.badRequest(
+      response,
+      "Cannot update your own data, including changing your role"
+    );
+  }  
+  // Parse the request body to get the updated role
+  try {
+    if (!userData.role) {
+      // Handle the case when role is missing
+      return responseUtils.badRequest(response, "Role is missing");
+    }
+    
+    // Update the user's role
+    try {
+      //const updatedUser = updateUserRole(userId, body.role);
+      const updatedUser = await User.findById(userId).exec();
+      updatedUser.role = userData.role;
+      await updatedUser.save();
+          
+      if (updatedUser) {
+        return responseUtils.sendJson(response, updatedUser);
+      } else {
+        return responseUtils.internalServerError(response);
+      }
+    } catch (error) {
+      // Handle the "Unknown role" error here
+      return responseUtils.badRequest(response, "Unknown role");
+    }
+  } catch (error) {
+    return responseUtils.internalServerError(response, error.message);
+  }
 };
 
 /**
@@ -40,9 +125,23 @@ const updateUser = async(response, userId, currentUser, userData) => {
  * @param {string} userId
  * @param {Object} currentUser (mongoose document object)
  */
-const viewUser = async(response, userId, currentUser) => {
+const viewUser = async(request, response, userId, currentUser) => {
   // TODO: 10.2 Implement this
-  throw new Error('Not Implemented');
+  // throw new Error('Not Implemented');
+  const user = await User.findById(userId).exec();
+  const authorizationHeader = request.headers.authorization;
+    if (!authorizationHeader || !currentUser) {
+      return responseUtils.basicAuthChallenge(response);
+    }
+    if (currentUser.role === "customer") {
+      return responseUtils.forbidden(response);
+    }
+
+    if (!user) {
+      return responseUtils.notFound(response);
+    }
+
+    return responseUtils.sendJson(response, user);
 };
 
 /**
@@ -53,7 +152,32 @@ const viewUser = async(response, userId, currentUser) => {
  */
 const registerUser = async(response, userData) => {
   // TODO: 10.2 Implement this
-  throw new Error('Not Implemented');
+  // throw new Error('Not Implemented');
+  const errors = [];
+  const emailUser = await User.findOne({email: userData.email}).exec();
+  const data = {
+    roles: ['customer', 'admin']
+  };
+
+  if (!userData.name) errors.push('Missing name');
+  if (!userData.email) errors.push('Missing email');
+  if (!userData.password) errors.push('Missing password');
+  if (userData.role && !data.roles.includes(userData.role)) errors.push('Unknown role');
+
+
+  if (errors.length > 0) {
+    return responseUtils.badRequest(response, errors.join(", "));
+  }
+
+  if (emailUser) {
+    return responseUtils.badRequest(response, "Email already in use");
+  }
+
+  const newUser = new User(userData);
+  newUser.role = 'customer';
+  await newUser.save();
+  return responseUtils.sendJson(response, newUser, 201);
+  
 };
 
 module.exports = { getAllUsers, registerUser, deleteUser, viewUser, updateUser };
