@@ -1,26 +1,15 @@
-const responseUtils = require('./utils/responseUtils');
-const { getCurrentUser } = require("./auth/auth");
-const User = require('./models/user');
+const User = require('../models/user');
+const responseUtils = require('../utils/responseUtils');
 /**
  * Send all users as JSON
  *
  * @param {http.ServerResponse} response
  */
-const getAllUsers = async (request, response) => {
+const getAllUsers = async (response) => {
   // TODO: 10.2 Implement this
   //throw new Error('Not Implemented');
-  const authorizationHeader = request.headers.authorization;
-    const user = await getCurrentUser(request);
-
-    if (!authorizationHeader || !user) {
-      return responseUtils.basicAuthChallenge(response);
-    }
-
-    if (user.role === "customer") {
-      return responseUtils.forbidden(response);
-    }
-    const users = await User.find({});
-    return responseUtils.sendJson(response, users);
+  const users = await User.find({});
+  return responseUtils.sendJson(response, users);
 };
 
 /**
@@ -30,17 +19,12 @@ const getAllUsers = async (request, response) => {
  * @param {string} userId
  * @param {Object} currentUser (mongoose document object)
  */
-const deleteUser = async(request, response, userId, currentUser) => {
+const deleteUser = async(response, userId, currentUser) => {
   // TODO: 10.2 Implement this
   // throw new Error('Not Implemented');
-  const authorizationHeader = request.headers.authorization;
+
   const user = await User.findById(userId).exec();
-  if (!authorizationHeader || !currentUser) {
-    return responseUtils.basicAuthChallenge(response);
-  }
-  if (currentUser.role === "customer") {
-    return responseUtils.forbidden(response);
-  }
+
   if (currentUser._id.equals(userId)) {
     return responseUtils.badRequest(response, "Cannot delete your own data");
   }
@@ -67,18 +51,10 @@ const deleteUser = async(request, response, userId, currentUser) => {
  * @param {Object} currentUser (mongoose document object)
  * @param {Object} userData JSON data from request body
  */
-const updateUser = async(request, response, userId, currentUser, userData) => {
+const updateUser = async(response, userId, currentUser, userData) => {
   // TODO: 10.2 Implement this
   // throw new Error('Not Implemented');
-  const authorizationHeader = request.headers.authorization;
   const user = await User.findById(userId).exec(); 
-  if (!authorizationHeader || !currentUser) {
-    return responseUtils.basicAuthChallenge(response);
-  }
-    
-  if (currentUser.role !== "admin") {
-    return responseUtils.forbidden(response);
-  }
     
   if (!user) {
     return responseUtils.notFound(response);
@@ -99,13 +75,11 @@ const updateUser = async(request, response, userId, currentUser, userData) => {
     
     // Update the user's role
     try {
-      //const updatedUser = updateUserRole(userId, body.role);
-      const updatedUser = await User.findById(userId).exec();
-      updatedUser.role = userData.role;
-      await updatedUser.save();
+      user.role = userData.role;
+      await user.save();
           
-      if (updatedUser) {
-        return responseUtils.sendJson(response, updatedUser);
+      if (user) {
+        return responseUtils.sendJson(response, user);
       } else {
         return responseUtils.internalServerError(response);
       }
@@ -125,14 +99,10 @@ const updateUser = async(request, response, userId, currentUser, userData) => {
  * @param {string} userId
  * @param {Object} currentUser (mongoose document object)
  */
-const viewUser = async(request, response, userId, currentUser) => {
+const viewUser = async(response, userId, currentUser) => {
   // TODO: 10.2 Implement this
   // throw new Error('Not Implemented');
   const user = await User.findById(userId).exec();
-  const authorizationHeader = request.headers.authorization;
-    if (!authorizationHeader || !currentUser) {
-      return responseUtils.basicAuthChallenge(response);
-    }
     if (currentUser.role === "customer") {
       return responseUtils.forbidden(response);
     }
