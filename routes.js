@@ -7,7 +7,6 @@ const { getCurrentUser } = require("./auth/auth");
 const User = require('./models/user');
 
 const fs = require("fs");
-const products = require("./products.json");
 
 const { getAllProducts } = require('./controllers/products');
 const { getAllUsers, registerUser, deleteUser, viewUser, updateUser } = require('./controllers/users');
@@ -71,6 +70,12 @@ const handleRequest = async (request, response) => {
   const { url, method, headers } = request;
   const filePath = new URL(url, `http://${headers.host}`).pathname;
 
+  const currentUser = await getCurrentUser(request);
+  const authorizationHeader = request.headers.authorization;
+  if (!authorizationHeader || !currentUser) {
+    return responseUtils.basicAuthChallenge(response);
+  }
+
   // serve static files from public/ and return immediately
   if (method.toUpperCase() === "GET" && !filePath.startsWith("/api")) {
     const fileName =
@@ -94,36 +99,36 @@ const handleRequest = async (request, response) => {
     // View GET
     const userId = filePath.split("/").pop();
     const user = await User.findById(userId).exec();
-    const currentUser = await getCurrentUser(request);
+
+    if (currentUser.role === "customer") {
+      return responseUtils.forbidden(response);
+    }
 
     if (method.toUpperCase() === "GET") {
       try {
-        await viewUser(request, response, userId, currentUser);
+        return await viewUser(response, userId, currentUser);
       } catch (error) {
-        responseUtils.internalServerError(response);
+        return responseUtils.internalServerError(response);
       }
-      return;
     }
 
     // Update PUT
     if (method.toUpperCase() === "PUT") {
       const body = await parseBodyJson(request);
       try {
-        await updateUser(request, response, userId, currentUser, body);
+        return await updateUser( response, userId, currentUser, body);
       } catch (error) {
-        responseUtils.internalServerError(response);
+        return responseUtils.internalServerError(response);
       }
-      return;
     }
     
     // Delete
     if (method.toUpperCase() === "DELETE") {
       try {
-        await deleteUser(request, response, userId, currentUser);
+        return await deleteUser(response, userId, currentUser);
       } catch (error) {
-        responseUtils.internalServerError(response);
+        return responseUtils.internalServerError(response);
       }
-      return;
     }
 
     // Handling OPTIONS requests
@@ -153,23 +158,28 @@ const handleRequest = async (request, response) => {
   
   if (filePath === '/api/products' && method === 'GET') {
     // Handle the GET request for /api/products here
-    try {
-      await getAllProducts(request, response);
-    } catch (error) {
-      responseUtils.internalServerError(response);
+    // Check if the user has either admin or customer role
+    if (currentUser.role !== 'admin' && currentUser.role !== 'customer') {
+      return responseUtils.forbidden(response);
     }
-    return;
+    try {
+      return await getAllProducts(response);
+    } catch (error) {
+      return responseUtils.internalServerError(response);
+    }
   }
 
   // GET all users
   if (filePath === "/api/users" && method.toUpperCase() === "GET") {
     // TODO: 8.5 Add authentication (only allowed to users with role "admin")
-    try {
-      await getAllUsers(request, response);
-    } catch (error) {
-      responseUtils.internalServerError(response);
+    if (currentUser.role === "customer") {
+      return responseUtils.forbidden(response);
     }
-    return;
+    try {
+      return await getAllUsers(response);
+    } catch (error) {
+      return responseUtils.internalServerError(response);
+    }
   }
 
   // register new user
@@ -190,11 +200,10 @@ const handleRequest = async (request, response) => {
     // - badRequest(response, message) from /utils/responseUtils.js
     const body = await parseBodyJson(request);
     try {
-      await registerUser(request, response, body);
+      return await registerUser(response, body);
     } catch (error) {
-      responseUtils.internalServerError(response);
+      return responseUtils.internalServerError(response);
     }
-    return;
   }
 };
 
