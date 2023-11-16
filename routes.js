@@ -70,12 +70,6 @@ const handleRequest = async (request, response) => {
   const { url, method, headers } = request;
   const filePath = new URL(url, `http://${headers.host}`).pathname;
 
-  const currentUser = await getCurrentUser(request);
-  const authorizationHeader = request.headers.authorization;
-  if (!authorizationHeader || !currentUser) {
-    return responseUtils.basicAuthChallenge(response);
-  }
-
   // serve static files from public/ and return immediately
   if (method.toUpperCase() === "GET" && !filePath.startsWith("/api")) {
     const fileName =
@@ -97,6 +91,12 @@ const handleRequest = async (request, response) => {
     // throw new Error("Not Implemented");
 
     // View GET
+    const currentUser = await getCurrentUser(request);
+    const authorizationHeader = request.headers.authorization;
+    if (!authorizationHeader || !currentUser) {
+      return responseUtils.basicAuthChallenge(response);
+    }
+
     const userId = filePath.split("/").pop();
     const user = await User.findById(userId).exec();
 
@@ -159,6 +159,12 @@ const handleRequest = async (request, response) => {
   if (filePath === '/api/products' && method === 'GET') {
     // Handle the GET request for /api/products here
     // Check if the user has either admin or customer role
+    const currentUser = await getCurrentUser(request);
+    const authorizationHeader = request.headers.authorization;
+    if (!authorizationHeader || !currentUser) {
+      return responseUtils.basicAuthChallenge(response);
+    }
+    
     if (currentUser.role !== 'admin' && currentUser.role !== 'customer') {
       return responseUtils.forbidden(response);
     }
@@ -172,6 +178,12 @@ const handleRequest = async (request, response) => {
   // GET all users
   if (filePath === "/api/users" && method.toUpperCase() === "GET") {
     // TODO: 8.5 Add authentication (only allowed to users with role "admin")
+    const currentUser = await getCurrentUser(request);
+    const authorizationHeader = request.headers.authorization;
+    if (!authorizationHeader || !currentUser) {
+      return responseUtils.basicAuthChallenge(response);
+    }
+
     if (currentUser.role === "customer") {
       return responseUtils.forbidden(response);
     }
@@ -202,7 +214,7 @@ const handleRequest = async (request, response) => {
     try {
       return await registerUser(response, body);
     } catch (error) {
-      return responseUtils.internalServerError(response);
+      responseUtils.badRequest(response);
     }
   }
 };
