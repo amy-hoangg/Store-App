@@ -222,11 +222,10 @@ const getAllProductsFromCart = () => {
   const products = [];
 
   // Iterate through session storage and collect products and their counts
-  for (let i = 0; i < sessionStorage.length; i++) {
-    const productId = sessionStorage.key(i);
+  Array.from(sessionStorage.keys()).forEach((productId) => {
     const count = sessionStorage.getItem(productId);
     products.push({ name: productId, amount: parseInt(count) });
-  }
+  });
 
   return products;
 };
