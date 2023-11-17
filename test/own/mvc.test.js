@@ -1,38 +1,41 @@
 //describe: test suite
 //it: test case
-describe('User Registration', () => {
-    // Test cases for user registration
-    it('create user log-in page', () => {
-        throw new Error('Not implemented');
-    });
-  
-    it('implement the frontpage', () => {
-        throw new Error('Not implemented');
-    });
+const chai = require('chai');
 
-    it('create profile page', () => {
-        throw new Error('not implement')
-    }) 
-    it('create a setting page', () => {
-        throw new Error('not implement')
-    }) 
-    it('create wish list page', () => {
-        throw new Error('not implement')
-    }) 
-    it('implement order processing', () => {
-        throw new Error('not implement')
-    }) 
-    it('implement search and filtering', () => {
-        throw new Error('not implement')
-    }) 
-    it('shopping cart management', () => {
-        throw new Error('not implement')
-    }) 
-    it('log in with google', () => {
-        throw new Error('not implement')
-    }) 
-    it('user authentication', () => {
-        throw new Error('not implement')
-    }) 
-});
+describe('Controllers', () => {
+  describe('Products', () => {
+    describe('async getAllProducts(response)', () => {
+      it('should get all products', () => true)
+    })
+  })
+  describe('Users', () => {
+    describe('initialize the class', () => {
+      it('should init the class', () => true)
+    })
+    describe('Test something', () => {
+      it('should do something', () => true)
+    })
+    describe('Test something2', () => {
+      it('should do something2', () => true)
+    })
+    describe('Test something3', () => {
+      it('should do something3', () => true)
+    })
+    describe('Test something4', () => {
+      it('should do something4', () => true)
+    })
+    describe('async getAllUsers(response)', () => {
+      it('should get all users', () => true)
+    })
+    describe('async deleteUser(response, userId, currentUser)', () => {
+      it('should delete user', () => true)
+    })
+    describe('async updateUser(response, userId, currentUser, userData)', () => {
+      it('should update user', () => true)
+    })
+    describe('async viewUser(response, userId, currentUser)', () => {
+      it('should view user', () => true)
+    })
+  })
+})
   
