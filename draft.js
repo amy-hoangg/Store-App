@@ -1,150 +1,19 @@
-const responseUtils = require("./utils/responseUtils");
-const { acceptsJson, isJson, parseBodyJson } = require("./utils/requestUtils");
-const { renderPublic } = require("./utils/render");
-const { getCurrentUser } = require("./auth/auth");
-const User = require("./models/user");
-const Product = require("./models/product");
-const Order = require("./models/order");
-
-const fs = require("fs");
-
-const {
-  getAllProducts,
-  registerProduct,
-  deleteProduct,
-  viewProduct,
-  updateProduct,
-} = require("./controllers/products");
-
-const {
-  getAllUsers,
-  registerUser,
-  deleteUser,
-  viewUser,
-  updateUser,
-} = require("./controllers/users");
-
-const {
-  getAllOrders,
-  registerOrder,
-  deleteOrder,
-  viewOrder,
-  updateOrder,
-} = require("./controllers/orders");
-
-/**
- * Known API routes and their allowed methods
- *
- * Used to check allowed methods and also to send correct header value
- * in response to an OPTIONS request by sendOptions() (Access-Control-Allow-Methods)
- */
-const allowedMethods = {
-  "/api/register": ["POST"],
-  "/api/users": ["GET"],
-  "/api/users/{userId}": ["GET", "PUT", "DELETE"],
-  "/api/products": ["GET", "POST"],
-  "/api/products/{productId}": ["GET", "PUT", "DELETE"],
-  "/api/orders": ["GET", "POST"],
-  "/api/orders/{orderId}": ["GET"],
-};
-
-/**
- * Send response to client options request.
- *
- * @param {string} filePath pathname of the request URL
- * @param {http.ServerResponse} response
- */
-const sendOptions = (filePath, response) => {
-  if (filePath in allowedMethods) {
-    response.writeHead(204, {
-      "Access-Control-Allow-Methods": allowedMethods[filePath].join(","),
-      "Access-Control-Allow-Headers": "Content-Type,Accept",
-      "Access-Control-Max-Age": "86400",
-      "Access-Control-Expose-Headers": "Content-Type,Accept",
-    });
-    return response.end();
-  }
-
-  return responseUtils.notFound(response);
-};
-
-/**
- * Does the url have an ID component as its last part? (e.g. /api/users/dsf7844e)
- *
- * @param {string} url filePath
- * @param {string} prefix
- * @returns {boolean}
- */
-const matchIdRoute = (url, prefix) => {
-  const idPattern = "[0-9a-z]{8,24}";
-  const regex = new RegExp(`^(/api)?/${prefix}/${idPattern}$`);
-  return regex.test(url);
-};
-
-/**
- * Does the URL match /api/users/{id}
- *
- * @param {string} url filePath
- * @returns {boolean}
- */
-const matchUserId = (url) => {
-  return matchIdRoute(url, "users");
-};
-
-const matchProductId = (url) => {
-  return matchIdRoute(url, "products");
-};
-
-const matchOrderId = (url) => {
-  return matchIdRoute(url, "orders");
-};
-
-const handleGetRequest = async (filePath, method, headers, request, response) => {
-  // Handle GET requests
-};
-
-const handlePostRequest = async (filePath, method, headers, request, response) => {
-  // Handle POST requests
-};
-
-const handlePutRequest = async (filePath, method, headers, request, response) => {
-  // Handle POST requests
-};
-
-const handleDeleteRequest = async (filePath, method, headers, request, response) => {
-  // Handle POST requests
-};
-
-const handleOptionsRequest = async (filePath, method, headers, request, response) => {
-  // Handle POST requests
-};
-
 const handleRequest = async (request, response) => {
   const { url, method, headers } = request;
   const filePath = new URL(url, `http://${headers.host}`).pathname;
 
-  if (!(filePath in allowedMethods)) {
-    return responseUtils.notFound(response);
-  }
-
+  // serve static files from public/ and return immediately
   if (method.toUpperCase() === "GET" && !filePath.startsWith("/api")) {
     const fileName =
       filePath === "/" || filePath === "" ? "index.html" : filePath;
     return renderPublic(fileName, response);
   }
 
-  if (!allowedMethods[filePath].includes(method.toUpperCase())) {
-    return responseUtils.methodNotAllowed(response);
-  }
-
-  if (method.toUpperCase() === "OPTIONS") {
-    return sendOptions(filePath, response);
-  }
-  if (!acceptsJson(request)) {
-    return responseUtils.contentTypeNotAcceptable(response);
-  }
-
   if (matchUserId(filePath)) {
+    if (!acceptsJson(request)) {
+      return responseUtils.contentTypeNotAcceptable(response);
+    }
+
     // View GET
     const currentUser = await getCurrentUser(request);
     const authorizationHeader = request.headers.authorization;
@@ -186,10 +55,32 @@ const handleRequest = async (request, response) => {
       }
     }
 
+    // Handling OPTIONS requests
+    if (method.toUpperCase === "OPTIONS") {
+      return sendOptions(filePath, response);
+    }
+
     return responseUtils.sendJson(response, user);
   }
 
-  if (filePath === "/api/products" && method.toUpperCase() === "GET") {
+  // Default to 404 Not Found if unknown url
+  if (!(filePath in allowedMethods)) return responseUtils.notFound(response);
+
+  // See: http://restcookbook.com/HTTP%20Methods/options/
+  if (method.toUpperCase() === "OPTIONS")
+    return sendOptions(filePath, response);
+
+  // Check for allowable methods
+  if (!allowedMethods[filePath].includes(method.toUpperCase())) {
+    return responseUtils.methodNotAllowed(response);
+  }
+
+  // Require a correct accept header (require 'application/json' or '*/*')
+  if (!acceptsJson(request)) {
+    return responseUtils.contentTypeNotAcceptable(response);
+  }
+
+  if (filePath === "/api/products" && method === "GET") {
     // Handle the GET request for /api/products here
     // Check if the user has either admin or customer role
     const currentUser = await getCurrentUser(request);
@@ -208,6 +99,7 @@ const handleRequest = async (request, response) => {
     }
   }
 
+  // GET all users
   if (filePath === "/api/users" && method.toUpperCase() === "GET") {
     // TODO: 8.5 Add authentication (only allowed to users with role "admin")
     const currentUser = await getCurrentUser(request);
@@ -226,7 +118,7 @@ const handleRequest = async (request, response) => {
     }
   }
 
-  if (filePath === "/api/orders" && method.toUpperCase() === "GET") {
+  if (filePath === "/api/orders" && method === "GET") {
     // Handle the GET request for /api/orders here
     // Check if the order has either admin or customer role
     const currentOrder = await getCurrentOrder(request);
@@ -245,6 +137,7 @@ const handleRequest = async (request, response) => {
     }
   }
 
+  // register new user
   if (filePath === "/api/register" && method.toUpperCase() === "POST") {
     // Fail if not a JSON request, don't allow non-JSON Content-Type
     if (!isJson(request)) {
@@ -309,6 +202,7 @@ const handleRequest = async (request, response) => {
     return responseUtils.sendJson(response, product);
   }
 
+  // register new product
   if (filePath === "/api/products" && method.toUpperCase() === "POST") {
     // Fail if not a JSON request, don't allow non-JSON Content-Type
     if (!isJson(request)) {
@@ -325,6 +219,8 @@ const handleRequest = async (request, response) => {
       responseUtils.badRequest(response);
     }
   }
+
+  //ORDERs
 
   if (matchOrderId(filePath)) {
     // View GET
@@ -373,6 +269,7 @@ const handleRequest = async (request, response) => {
     return responseUtils.sendJson(response, order);
   }
 
+  // register new order
   if (filePath === "/api/orders" && method.toUpperCase() === "POST") {
     // Fail if not a JSON request, don't allow non-JSON Content-Type
     if (!isJson(request)) {
@@ -390,5 +287,3 @@ const handleRequest = async (request, response) => {
     }
   }
 };
-
-module.exports = { handleRequest };

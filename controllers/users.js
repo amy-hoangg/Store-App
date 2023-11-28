@@ -7,7 +7,6 @@ const responseUtils = require('../utils/responseUtils');
  */
 const getAllUsers = async (response) => {
   // TODO: 10.2 Implement this
-  //throw new Error('Not Implemented');
   const users = await User.find({});
   return responseUtils.sendJson(response, users);
 };
@@ -120,7 +119,6 @@ const viewUser = async(response, userId, currentUser) => {
  * @param {http.ServerResponse} response
  * @param {Object} userData JSON data from request body
  */
-// eslint-disable-next-line complexity
 const registerUser = async(response, userData) => {
   // TODO: 10.2 Implement this
   // throw new Error('Not Implemented');

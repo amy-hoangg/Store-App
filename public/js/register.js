@@ -27,7 +27,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Check if password and password confirmation match
     if (password !== passwordConfirmation) {
       createNotification("Passwords do not match", 'notifications-container', false);
-    } else {
+    } 
+    else {
       // Create user object with role "customer"
       const user = {
         name: name,
@@ -48,12 +49,14 @@ document.addEventListener("DOMContentLoaded", () => {
             createNotification("Registration successful", 'notifications-container', true);
             // Reset the form
             registerForm.reset();
-          } else {
+          } 
+          else {
             // Use try-catch to handle potential errors when getting response text
             try {
               const responseText = await registrationResponse.text();
               createNotification(responseText, 'notifications-container', false);
-            } catch (error) {
+            } 
+            catch (error) {
               createNotification("An error occurred during registration", 'notifications-container', false);
             }
           }
