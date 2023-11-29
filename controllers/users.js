@@ -1,12 +1,11 @@
-const User = require('../models/user');
-const responseUtils = require('../utils/responseUtils');
+const User = require("../models/user");
+const responseUtils = require("../utils/responseUtils");
 /**
  * Send all users as JSON
  *
  * @param {http.ServerResponse} response
  */
 const getAllUsers = async (response) => {
-  // TODO: 10.2 Implement this
   const users = await User.find({});
   return responseUtils.sendJson(response, users);
 };
@@ -18,10 +17,7 @@ const getAllUsers = async (response) => {
  * @param {string} userId
  * @param {Object} currentUser (mongoose document object)
  */
-const deleteUser = async(response, userId, currentUser) => {
-  // TODO: 10.2 Implement this
-  // throw new Error('Not Implemented');
-
+const deleteUser = async (response, userId, currentUser) => {
   const user = await User.findById(userId).exec();
 
   if (currentUser._id.equals(userId)) {
@@ -29,16 +25,14 @@ const deleteUser = async(response, userId, currentUser) => {
   }
   if (!user) {
     return responseUtils.notFound(response);
-  }
+  } 
+  else {
+    const userToDelete = await User.findById(userId);
+    const deletedUser = await User.deleteOne({ _id: userId });
 
-  else
-  {
-  const userToDelete = await User.findById(userId);
-  const deletedUser = await User.deleteOne({ _id: userId });
-
-  if (deletedUser) {
-    return responseUtils.sendJson(response, userToDelete);
-  }
+    if (deletedUser) {
+      return responseUtils.sendJson(response, userToDelete);
+    }
   }
 };
 
@@ -50,11 +44,9 @@ const deleteUser = async(response, userId, currentUser) => {
  * @param {Object} currentUser (mongoose document object)
  * @param {Object} userData JSON data from request body
  */
-const updateUser = async(response, userId, currentUser, userData) => {
-  // TODO: 10.2 Implement this
-  // throw new Error('Not Implemented');
-  const user = await User.findById(userId).exec(); 
-    
+const updateUser = async (response, userId, currentUser, userData) => {
+  const user = await User.findById(userId).exec();
+
   if (!user) {
     return responseUtils.notFound(response);
   }
@@ -64,19 +56,19 @@ const updateUser = async(response, userId, currentUser, userData) => {
       response,
       "Updating own data is not allowed"
     );
-  }  
+  }
   // Parse the request body to get the updated role
   try {
     if (!userData.role) {
       // Handle the case when role is missing
       return responseUtils.badRequest(response, "Role is missing");
     }
-    
+
     // Update the user's role
     try {
       user.role = userData.role;
       await user.save();
-          
+
       if (user) {
         return responseUtils.sendJson(response, user);
       } else {
@@ -98,19 +90,17 @@ const updateUser = async(response, userId, currentUser, userData) => {
  * @param {string} userId
  * @param {Object} currentUser (mongoose document object)
  */
-const viewUser = async(response, userId, currentUser) => {
-  // TODO: 10.2 Implement this
-  // throw new Error('Not Implemented');
+const viewUser = async (response, userId, currentUser) => {
   const user = await User.findById(userId).exec();
-    if (currentUser.role === "customer") {
-      return responseUtils.forbidden(response);
-    }
+  if (currentUser.role === "customer") {
+    return responseUtils.forbidden(response);
+  }
 
-    if (!user) {
-      return responseUtils.notFound(response);
-    }
+  if (!user) {
+    return responseUtils.notFound(response);
+  }
 
-    return responseUtils.sendJson(response, user);
+  return responseUtils.sendJson(response, user);
 };
 
 /**
@@ -119,10 +109,7 @@ const viewUser = async(response, userId, currentUser) => {
  * @param {http.ServerResponse} response
  * @param {Object} userData JSON data from request body
  */
-const registerUser = async(response, userData) => {
-  // TODO: 10.2 Implement this
-  // throw new Error('Not Implemented');
-
+const registerUser = async (response, userData) => {
   const isValidEmail = (email) => {
     // Regular expression for a basic email format validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -130,18 +117,19 @@ const registerUser = async(response, userData) => {
   };
 
   const errors = [];
-  const emailUser = await User.findOne({email: userData.email}).exec();
+  const emailUser = await User.findOne({ email: userData.email }).exec();
   const data = {
-    roles: ['customer', 'admin']
+    roles: ["customer", "admin"],
   };
 
-  if (!userData.name) errors.push('Missing name');
-  if (!userData.email) errors.push('Missing email');
-  if (!isValidEmail(userData.email)) errors.push('Invalid email format');
-  if (!userData.password) errors.push('Missing password');
-  if (userData.password && userData.password.length < 10) errors.push('Password is too short (minimum length: 10)');
-  if (userData.role && !data.roles.includes(userData.role)) errors.push('Unknown role');
-
+  if (!userData.name) errors.push("Missing name");
+  if (!userData.email) errors.push("Missing email");
+  if (!isValidEmail(userData.email)) errors.push("Invalid email format");
+  if (!userData.password) errors.push("Missing password");
+  if (userData.password && userData.password.length < 10)
+    errors.push("Password is too short (minimum length: 10)");
+  if (userData.role && !data.roles.includes(userData.role))
+    errors.push("Unknown role");
 
   if (errors.length > 0) {
     return responseUtils.badRequest(response, errors.join(", "));
@@ -152,10 +140,15 @@ const registerUser = async(response, userData) => {
   }
 
   const newUser = new User(userData);
-  newUser.role = 'customer';
+  newUser.role = "customer";
   await newUser.save();
   return responseUtils.sendJson(response, newUser, 201);
-  
 };
 
-module.exports = { getAllUsers, registerUser, deleteUser, viewUser, updateUser };
+module.exports = {
+  getAllUsers,
+  registerUser,
+  deleteUser,
+  viewUser,
+  updateUser,
+};

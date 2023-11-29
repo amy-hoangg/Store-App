@@ -32,12 +32,6 @@ const {
   updateOrder,
 } = require("./controllers/orders");
 
-/**
- * Known API routes and their allowed methods
- *
- * Used to check allowed methods and also to send correct header value
- * in response to an OPTIONS request by sendOptions() (Access-Control-Allow-Methods)
- */
 const allowedMethods = {
   "/api/register": ["POST"],
   "/api/users": ["GET"],
@@ -99,33 +93,9 @@ const matchOrderId = (url) => {
   return matchIdRoute(url, "orders");
 };
 
-const handleGetRequest = async (filePath, method, headers, request, response) => {
-  // Handle GET requests
-};
-
-const handlePostRequest = async (filePath, method, headers, request, response) => {
-  // Handle POST requests
-};
-
-const handlePutRequest = async (filePath, method, headers, request, response) => {
-  // Handle POST requests
-};
-
-const handleDeleteRequest = async (filePath, method, headers, request, response) => {
-  // Handle POST requests
-};
-
-const handleOptionsRequest = async (filePath, method, headers, request, response) => {
-  // Handle POST requests
-};
-
 const handleRequest = async (request, response) => {
   const { url, method, headers } = request;
   const filePath = new URL(url, `http://${headers.host}`).pathname;
-
-  if (!(filePath in allowedMethods)) {
-    return responseUtils.notFound(response);
-  }
 
   if (method.toUpperCase() === "GET" && !filePath.startsWith("/api")) {
     const fileName =
@@ -133,19 +103,7 @@ const handleRequest = async (request, response) => {
     return renderPublic(fileName, response);
   }
 
-  if (!allowedMethods[filePath].includes(method.toUpperCase())) {
-    return responseUtils.methodNotAllowed(response);
-  }
-
-  if (method.toUpperCase() === "OPTIONS") {
-    return sendOptions(filePath, response);
-  }
-  if (!acceptsJson(request)) {
-    return responseUtils.contentTypeNotAcceptable(response);
-  }
-
   if (matchUserId(filePath)) {
-    // View GET
     const currentUser = await getCurrentUser(request);
     const authorizationHeader = request.headers.authorization;
     if (!authorizationHeader || !currentUser) {
@@ -157,6 +115,10 @@ const handleRequest = async (request, response) => {
 
     if (currentUser.role === "customer") {
       return responseUtils.forbidden(response);
+    }
+
+    if (!acceptsJson(request)) {
+      return responseUtils.contentTypeNotAcceptable(response);
     }
 
     if (method.toUpperCase() === "GET") {
@@ -186,30 +148,105 @@ const handleRequest = async (request, response) => {
       }
     }
 
+    // Handling OPTIONS requests
+    if (method.toUpperCase === "OPTIONS") {
+      return sendOptions(filePath, response);
+    }
+
     return responseUtils.sendJson(response, user);
   }
 
-  if (filePath === "/api/products" && method.toUpperCase() === "GET") {
-    // Handle the GET request for /api/products here
-    // Check if the user has either admin or customer role
+  if (matchProductId(filePath)) {
     const currentUser = await getCurrentUser(request);
     const authorizationHeader = request.headers.authorization;
     if (!authorizationHeader || !currentUser) {
       return responseUtils.basicAuthChallenge(response);
     }
 
-    if (currentUser.role !== "admin" && currentUser.role !== "customer") {
-      return responseUtils.forbidden(response);
+    const productId = filePath.split("/").pop();
+    const product = await Product.findById(productId).exec();
+
+
+    if (!acceptsJson(request)) {
+      return responseUtils.contentTypeNotAcceptable(response);
     }
-    try {
-      return await getAllProducts(response);
-    } catch (error) {
-      return responseUtils.internalServerError(response);
+
+    if (method.toUpperCase() === "GET") {
+      try {
+        return await viewProduct(response, productId, currentUser);
+      } catch (error) {
+        return responseUtils.internalServerError(response);
+      }
     }
+
+    // Update PUT
+    if (method.toUpperCase() === "PUT") {
+      if (currentUser.role === "customer") {
+        return responseUtils.forbidden(response);
+    }
+      const body = await parseBodyJson(request);
+      try {
+        return await updateProduct(response, productId, currentUser, body);
+      } catch (error) {
+        return responseUtils.internalServerError(response);
+      }
+    }
+
+    // Delete
+    if (method.toUpperCase() === "DELETE") {
+      try {
+        return await deleteProduct(response, productId, currentUser);
+      } catch (error) {
+        return responseUtils.internalServerError(response);
+      }
+    }
+
+    return responseUtils.sendJson(response, product);
+  }
+
+  if (matchOrderId(filePath)) {
+    const currentUser = await getCurrentUser(request);
+    const authorizationHeader = request.headers.authorization;
+    if (!authorizationHeader || !currentUser) {
+      return responseUtils.basicAuthChallenge(response);
+    }
+
+    const orderId = filePath.split("/").pop();
+    const order = await Order.findById(orderId).exec();
+
+
+    if (!acceptsJson(request)) {
+      return responseUtils.contentTypeNotAcceptable(response);
+    }
+
+    if (method.toUpperCase() === "GET") {
+      try {
+        return await viewOrder(response, orderId, currentUser);
+      } catch (error) {
+        return responseUtils.internalServerError(response);
+      }
+    }
+
+    return responseUtils.sendJson(response, order);
+  }
+
+  if (!(filePath in allowedMethods)) {
+    return responseUtils.notFound(response);
+  }
+
+  if (method.toUpperCase() === "OPTIONS") {
+    return sendOptions(filePath, response);
+  }
+
+  if (!allowedMethods[filePath].includes(method.toUpperCase())) {
+    return responseUtils.methodNotAllowed(response);
   }
 
   if (filePath === "/api/users" && method.toUpperCase() === "GET") {
-    // TODO: 8.5 Add authentication (only allowed to users with role "admin")
+    if (!acceptsJson(request)) {
+      return responseUtils.contentTypeNotAcceptable(response);
+    }
+
     const currentUser = await getCurrentUser(request);
     const authorizationHeader = request.headers.authorization;
     if (!authorizationHeader || !currentUser) {
@@ -226,27 +263,48 @@ const handleRequest = async (request, response) => {
     }
   }
 
-  if (filePath === "/api/orders" && method.toUpperCase() === "GET") {
-    // Handle the GET request for /api/orders here
-    // Check if the order has either admin or customer role
-    const currentOrder = await getCurrentOrder(request);
+  if (filePath === "/api/products" && method.toUpperCase() === "GET") {
+    if (!acceptsJson(request)) {
+      return responseUtils.contentTypeNotAcceptable(response);
+    }
+
+    const currentUser = await getCurrentUser(request);
     const authorizationHeader = request.headers.authorization;
-    if (!authorizationHeader || !currentOrder) {
+    if (!authorizationHeader || !currentUser) {
       return responseUtils.basicAuthChallenge(response);
     }
 
-    if (currentOrder.role !== "admin" && currentOrder.role !== "customer") {
-      return responseUtils.forbidden(response);
+    try {
+      return await getAllProducts(response);
+    } 
+    catch (error) {
+      return responseUtils.internalServerError(response);
+    }
+  }
+
+  if (filePath === "/api/orders" && method.toUpperCase() === "GET") {
+    if (!acceptsJson(request)) {
+      return responseUtils.contentTypeNotAcceptable(response);
+    }
+
+    const currentUser = await getCurrentUser(request);
+    const authorizationHeader = request.headers.authorization;
+    if (!authorizationHeader || !currentUser) {
+      return responseUtils.basicAuthChallenge(response);
     }
     try {
       return await getAllOrders(response);
-    } catch (error) {
+    } 
+    catch (error) {
       return responseUtils.internalServerError(response);
     }
   }
 
   if (filePath === "/api/register" && method.toUpperCase() === "POST") {
-    // Fail if not a JSON request, don't allow non-JSON Content-Type
+    if (!acceptsJson(request)) {
+      return responseUtils.contentTypeNotAcceptable(response);
+    }
+
     if (!isJson(request)) {
       return responseUtils.badRequest(
         response,
@@ -262,55 +320,21 @@ const handleRequest = async (request, response) => {
     }
   }
 
-  if (matchProductId(filePath)) {
-    // View GET
-    const currentProduct = await getCurrentProduct(request);
-    const authorizationHeader = request.headers.authorization;
+  if (filePath === "/api/products" && method.toUpperCase() === "POST") {
+    if (!acceptsJson(request)) {
+      return responseUtils.contentTypeNotAcceptable(response);
+    }
 
-    if (!authorizationHeader || !currentProduct) {
+    const currentUser = await getCurrentUser(request);
+    const authorizationHeader = request.headers.authorization;
+    if (!authorizationHeader || !currentUser) {
       return responseUtils.basicAuthChallenge(response);
     }
 
-    const productId = filePath.split("/").pop();
-    const product = await Product.findById(productId).exec();
-
-    if (method.toUpperCase() === "GET") {
-      try {
-        return await viewProduct(response, productId, currentProduct);
-      } catch (error) {
-        return responseUtils.internalServerError(response);
-      }
+    if (currentUser.role === "customer") {
+      return responseUtils.forbidden(response);
     }
 
-    // Update PUT
-    if (method.toUpperCase() === "PUT") {
-      const body = await parseBodyJson(request);
-      try {
-        return await updateProduct(response, productId, currentProduct, body);
-      } catch (error) {
-        return responseUtils.internalServerError(response);
-      }
-    }
-
-    // Delete
-    if (method.toUpperCase() === "DELETE") {
-      try {
-        return await deleteProduct(response, productId, currentProduct);
-      } catch (error) {
-        return responseUtils.internalServerError(response);
-      }
-    }
-
-    // Handling OPTIONS requests
-    if (method.toUpperCase === "OPTIONS") {
-      return sendOptions(filePath, response);
-    }
-
-    return responseUtils.sendJson(response, product);
-  }
-
-  if (filePath === "/api/products" && method.toUpperCase() === "POST") {
-    // Fail if not a JSON request, don't allow non-JSON Content-Type
     if (!isJson(request)) {
       return responseUtils.badRequest(
         response,
@@ -326,55 +350,21 @@ const handleRequest = async (request, response) => {
     }
   }
 
-  if (matchOrderId(filePath)) {
-    // View GET
-    const currentOrder = await getCurrentOrder(request);
-    const authorizationHeader = request.headers.authorization;
+  if (filePath === "/api/orders" && method.toUpperCase() === "POST") {
+    if (!acceptsJson(request)) {
+      return responseUtils.contentTypeNotAcceptable(response);
+    }
 
-    if (!authorizationHeader || !currentOrder) {
+    const currentUser = await getCurrentUser(request);
+    const authorizationHeader = request.headers.authorization;
+    if (!authorizationHeader || !currentUser) {
       return responseUtils.basicAuthChallenge(response);
     }
 
-    const orderId = filePath.split("/").pop();
-    const order = await Order.findById(orderId).exec();
-
-    if (method.toUpperCase() === "GET") {
-      try {
-        return await viewOrder(response, orderId, currentOrder);
-      } catch (error) {
-        return responseUtils.internalServerError(response);
-      }
+    if (currentUser.role === "admin") {
+      return responseUtils.forbidden(response);
     }
 
-    // Update PUT
-    if (method.toUpperCase() === "PUT") {
-      const body = await parseBodyJson(request);
-      try {
-        return await updateOrder(response, orderId, currentOrder, body);
-      } catch (error) {
-        return responseUtils.internalServerError(response);
-      }
-    }
-
-    // Delete
-    if (method.toUpperCase() === "DELETE") {
-      try {
-        return await deleteOrder(response, orderId, currentOrder);
-      } catch (error) {
-        return responseUtils.internalServerError(response);
-      }
-    }
-
-    // Handling OPTIONS requests
-    if (method.toUpperCase === "OPTIONS") {
-      return sendOptions(filePath, response);
-    }
-
-    return responseUtils.sendJson(response, order);
-  }
-
-  if (filePath === "/api/orders" && method.toUpperCase() === "POST") {
-    // Fail if not a JSON request, don't allow non-JSON Content-Type
     if (!isJson(request)) {
       return responseUtils.badRequest(
         response,

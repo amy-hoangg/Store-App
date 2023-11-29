@@ -1,0 +1,1284 @@
+
+> server@1.0.0 test
+> mocha --require test/setup.test.js --ignore 'test/8.4/**/*.js' --ignore 'test/8.5/**/*.js' --ignore 'test/8.6/**/*.js' --ignore 'test/9.2/**/*.js' --ignore 'test/9.6/**/*.js' --ignore 'test/10.2/**/*.js'
+
+
+
+  Auth
+    getCurrentUser()
+      ✓ should return null when "Authorization" header is missing
+      ✓ should return null when "Authorization" header is empty
+      ✓ should return null when "Authorization" type is not "Basic"
+      ✓ should return null when user does not exist
+      ✓ should return null when password is incorrect (113ms)
+      ✓ should return user object when credentials are correct (114ms)
+
+  Products Controller
+    getAllProducts()
+      1) should respond with JSON
+
+  Users Controller
+    getAllUsers()
+      ✓ should respond with JSON
+    viewUser()
+      ✓ should respond with "404 Not Found" if user with given userId does not exist
+      ✓ should respond with JSON
+    updateUser()
+      ✓ should respond with "404 Not Found" if user with given userId does not exist
+      ✓ should update only the role of the user with userId
+      ✓ should respond with "400 Bad Request" when userId === currentUser.id
+      ✓ should respond with "400 Bad Request" when role is missing
+      ✓ should respond with "400 Bad Request" when role is not valid
+    deleteUser()
+      ✓ should respond with "404 Not Found" if user with given userId does not exist
+      ✓ should respond with "400 Bad Request" when userId === currentUser.id
+      ✓ should delete existing user with userId
+      ✓ should return the deleted user
+    registerUser()
+      ✓ should respond with "400 Bad Request" when email is not valid
+      ✓ should respond with "400 Bad Request" when email is already in use
+      ✓ should respond with "400 Bad Request" when name is missing
+      ✓ should respond with "400 Bad Request" when password is missing
+      ✓ should respond with "400 Bad Request" when password is too short
+      ✓ should respond with "201 Created" when registration is successful (113ms)
+      ✓ should set user role to "customer" when registration is successful (114ms)
+      ✓ should return the created user as JSON (114ms)
+
+  getDbUrl()
+    ✓ must return default database URL if DBURL is not defined
+    ✓ must return DBURL defined in environment variable
+
+  .env
+    2) must define DBURL
+
+  User Model
+    Schema validation
+      ✓ must define "name" (111ms)
+      ✓ must trim spaces from "name" (111ms)
+      ✓ must not allow "name" to have only spaces (111ms)
+      ✓ must require "name" to be at least one character long (110ms)
+      ✓ must not allow "name" to be longer than 50 characters (111ms)
+      ✓ must require "email" (111ms)
+      ✓ must require "email" to be valid email address (111ms)
+      ✓ must require "password"
+      ✓ must not allow empty "password"
+      ✓ must require password to be at least 10 characters long (111ms)
+      ✓ must hash password (111ms)
+      ✓ must hash "password" when set to a new value (222ms)
+      ✓ has an optional "role" (111ms)
+      ✓ must set default value of "role" to customer (110ms)
+      ✓ must allow any known "role" (221ms)
+      ✓ must trim "role" (110ms)
+      ✓ must cast "role" to lowercase (111ms)
+      ✓ must not allow unknown "role" (111ms)
+    checkPassword()
+      ✓ must detect correct "password" (221ms)
+      ✓ must detect a false "password" (221ms)
+
+  Controllers
+    Products
+      async getAllProducts(response)
+        ✓ should get all products
+    Users
+      initialize the class
+        ✓ should init the class
+      Test something
+        ✓ should do something
+      Test something2
+        ✓ should do something2
+      Test something3
+        ✓ should do something3
+      Test something4
+        ✓ should do something4
+      async getAllUsers(response)
+        ✓ should get all users
+      async deleteUser(response, userId, currentUser)
+        ✓ should delete user
+      async updateUser(response, userId, currentUser, userData)
+        ✓ should update user
+      async viewUser(response, userId, currentUser)
+        ✓ should view user
+
+  Routes
+    handleRequest()
+      General Server Functionality
+        ✓ should respond with "404 Not Found" to an unknown URI
+        ✓ should respond with HTML file when "/register.html" is requested
+        ✓ should respond with "405 Method Not Allowed" to an unsupported method
+        ✓ should respond with "204 No Content" to an OPTIONS request
+        ✓ should respond with correct Allow headers to an OPTIONS request
+      Registration: POST /api/register
+        ✓ should respond with "406 Not Acceptable" when Accept header is missing
+        ✓ should respond with "406 Not Acceptable" when client does not accept JSON
+        ✓ should respond with "400 Bad Request" when request body is not valid JSON
+        ✓ should respond with "400 Bad Request" when email is missing
+        ✓ should respond with "400 Bad Request" when email is already in use
+        ✓ should respond with "400 Bad Request" when name is missing
+        ✓ should respond with "400 Bad Request" when password is missing
+        ✓ should respond with "201 Created" when registration is successful (116ms)
+        ✓ should set user role to "customer" when registration is successful (115ms)
+      Viewing all users: GET /api/users
+        ✓ should respond with "406 Not Acceptable" when Accept header is missing
+        ✓ should respond with "406 Not Acceptable" when client does not accept JSON
+        ✓ should respond with "401 Unauthorized" when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization header is empty
+        ✓ should respond with Basic Auth Challenge when Authorization header is not properly encoded
+        ✓ should respond with Basic Auth Challenge when Authorization credentials are incorrect (113ms)
+        ✓ should respond with "403 Forbidden" when customer credentials are received (113ms)
+        ✓ should respond with JSON when admin credentials are received (114ms)
+      Viewing a single user: GET /api/users/{id}
+        ✓ should respond with "401 Unauthorized" when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization credentials are incorrect (113ms)
+        ✓ should respond with "403 Forbidden" when customer credentials are received (113ms)
+        ✓ should respond with "406 Not Acceptable" when Accept header is missing (113ms)
+        ✓ should respond with "406 Not Acceptable" when client does not accept JSON (114ms)
+        ✓ should respond with JSON when admin credentials are received (114ms)
+        ✓ should respond with status code 404 when user does not exist (114ms)
+      Updating users: PUT /api/users/{id}
+        ✓ should respond with "401 Unauthorized" when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization credentials are incorrect (113ms)
+        ✓ should respond with "403 Forbidden" when customer credentials are received (113ms)
+        ✓ should respond with "406 Not Acceptable" when Accept header is missing (113ms)
+        ✓ should respond with "406 Not Acceptable" when client does not accept JSON (113ms)
+        ✓ should update role when admin credentials are received (117ms)
+        ✓ should only update role (117ms)
+        ✓ should respond with "400 Bad Request" when role is missing (115ms)
+        ✓ should respond with "400 Bad Request" when role is not valid (114ms)
+        ✓ should respond with status code 404 when user does not exist (116ms)
+      Deleting users: DELETE /api/users/{id}
+        ✓ should respond with "401 Unauthorized" when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization credentials are incorrect (113ms)
+        ✓ should respond with "403 Forbidden" when customer credentials are received (114ms)
+        ✓ should respond with "406 Not Acceptable" when Accept header is missing (114ms)
+        ✓ should respond with "406 Not Acceptable" when client does not accept JSON (114ms)
+        ✓ should delete user when admin credentials are received (116ms)
+        ✓ should return the deleted user (116ms)
+        ✓ should respond with status code 404 when user does not exist (113ms)
+      Viewing all products: GET /api/products
+        ✓ should respond with "401 Unauthorized" when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization credentials are incorrect (112ms)
+        ✓ should respond with Basic Auth Challenge when Authorization header is empty
+        ✓ should respond with Basic Auth Challenge when Authorization header is not properly encoded
+        ✓ should respond with "406 Not Acceptable" when Accept header is missing
+        ✓ should respond with "406 Not Acceptable" when client does not accept JSON
+        ✓ should respond with JSON when admin credentials are received (113ms)
+        ✓ should respond with JSON when customer credentials are received (114ms)
+        3) should respond with correct data when admin credentials are received
+        4) should respond with correct data when customer credentials are received
+      Viewing a single product: GET /api/products/{id}
+        ✓ should respond with "401 Unauthorized" when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization credentials are incorrect (112ms)
+        ✓ should respond with "406 Not Acceptable" when Accept header is missing (113ms)
+        ✓ should respond with "406 Not Acceptable" when client does not accept JSON (113ms)
+        ✓ should respond with JSON when admin credentials are received (115ms)
+        ✓ should respond with JSON when customer credentials are received (114ms)
+        ✓ should respond with status code 404 when product does not exist (113ms)
+      Updating products: PUT /api/products/{id}
+        ✓ should respond with "401 Unauthorized" when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization credentials are incorrect (115ms)
+        ✓ should respond with "403 Forbidden" when customer credentials are received (114ms)
+        ✓ should respond with "406 Not Acceptable" when Accept header is missing (114ms)
+        ✓ should respond with "406 Not Acceptable" when client does not accept JSON (113ms)
+        ✓ should update product when admin credentials are received (116ms)
+        5) should allow partial update of product properties
+        ✓ should respond with "400 Bad Request" when name is empty (115ms)
+        ✓ should respond with "400 Bad Request" when price is not a number (114ms)
+        ✓ should respond with "400 Bad Request" when price is 0 (zero) (116ms)
+        ✓ should respond with "400 Bad Request" when price is negative (114ms)
+        ✓ should respond with status code 404 when product does not exist (117ms)
+      Deleting products: DELETE /api/products/{id}
+        ✓ should respond with "401 Unauthorized" when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization credentials are incorrect (113ms)
+        ✓ should respond with "403 Forbidden" when customer credentials are received (113ms)
+        ✓ should respond with "406 Not Acceptable" when Accept header is missing (114ms)
+        ✓ should respond with "406 Not Acceptable" when client does not accept JSON (113ms)
+        ✓ should delete product when admin credentials are received (117ms)
+        6) should return the deleted user
+        ✓ should respond with status code 404 when user does not exist (118ms)
+      Create a new product: POST /api/products
+        ✓ should respond with "406 Not Acceptable" when Accept header is missing
+        ✓ should respond with "406 Not Acceptable" when client does not accept JSON
+        ✓ should respond with "401 Unauthorized" when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization credentials are incorrect (113ms)
+        ✓ should respond with "403 Forbidden" when customer credentials are received (113ms)
+        ✓ should respond with "400 Bad Request" when request body is not valid JSON (114ms)
+        ✓ should respond with "400 Bad Request" when name is missing (113ms)
+        ✓ should respond with "400 Bad Request" when price is missing (114ms)
+        7) should respond with "201 Created" when product creation is successful
+      Viewing all orders: GET /api/orders
+        ✓ should respond with "401 Unauthorized" when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization credentials are incorrect (113ms)
+        ✓ should respond with Basic Auth Challenge when Authorization header is empty
+        ✓ should respond with Basic Auth Challenge when Authorization header is not properly encoded
+        ✓ should respond with "406 Not Acceptable" when Accept header is missing
+        ✓ should respond with "406 Not Acceptable" when client does not accept JSON
+        ✓ should respond with JSON when admin credentials are received (115ms)
+        ✓ should respond with JSON when customer credentials are received (114ms)
+        ✓ should respond with correct data when admin credentials are received (115ms)
+        8) should respond with correct data when customer credentials are received
+      Viewing a single order: GET /api/orders/{id}
+        ✓ should respond with "401 Unauthorized" when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization credentials are incorrect (112ms)
+        ✓ should respond with "406 Not Acceptable" when Accept header is missing (113ms)
+        ✓ should respond with "406 Not Acceptable" when client does not accept JSON (113ms)
+        9) should respond with JSON when admin credentials are received
+        10) should respond with JSON when customer credentials are received
+        11) should respond with status code 404 when order does not exist
+        12) should respond with status code 404 when order exists but the owner is not the current customer
+      Create a new order: POST /api/orders
+        ✓ should respond with "406 Not Acceptable" when Accept header is missing
+        ✓ should respond with "406 Not Acceptable" when client does not accept JSON
+        ✓ should respond with "401 Unauthorized" when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization credentials are incorrect (114ms)
+        ✓ should respond with "403 Forbidden" when admin credentials are received (113ms)
+        ✓ should respond with "400 Bad Request" when request body is not valid JSON (113ms)
+        ✓ should respond with "400 Bad Request" when items is empty (113ms)
+        ✓ should respond with "400 Bad Request" when quantity is missing (113ms)
+        ✓ should respond with "400 Bad Request" when product is missing (113ms)
+        ✓ should respond with "400 Bad Request" when product _id is missing (113ms)
+        ✓ should respond with "400 Bad Request" when product name is missing (113ms)
+        ✓ should respond with "400 Bad Request" when price is missing (113ms)
+        13) should respond with "201 Created" when order creation is successful
+
+  User Inteface
+    14) "before all" hook in "User Inteface"
+
+  Request Utils
+    15) "before all" hook in "User Inteface"
+    acceptsJson()
+      ✓ should return false when "Accept" header is missing
+      ✓ should return false when "Accept" header does not include "application/json" or "*/*"
+      ✓ should return true when "Accept" header includes "application/json"
+      ✓ should return true when "Accept" header includes "*/*"
+    getCredentials()
+      ✓ should return null when "Authorization" header is missing
+      ✓ should return null when "Authorization" header is empty
+      ✓ should return null when "Authorization" type is not "Basic"
+      ✓ should return Array when "Authorization" type is "Basic"
+      ✓ should return parsed credentials in an Array when "Authorization" header is correct
+    isJson()
+      ✓ should return false when "Content-Type" header is missing
+      ✓ should return false when "Content-Type" header is empty
+      ✓ should return false when "Content-Type" is not "application/json
+      ✓ should return true when "Content-Type" is "application/json
+
+  Response Utils
+    basicAuthChallenge()
+      ✓ should set response status to 401
+      ✓ should set response header "WWW-Authenticate" to "Basic"
+    sendJson()
+      ✓ should set response status to 200 by default
+      ✓ should set response status to given value
+      ✓ should set response Content-Type to "application/json"
+    createdResource()
+      ✓ should set response status to 201
+      ✓ should set response Content-Type to "application/json"
+    noContent()
+      ✓ should set response status to 204
+    badRequest()
+      ✓ should set response status to 400
+      ✓ should set response Content-Type to "application/json" when error message is supplied
+    unauthorized()
+      ✓ should set response status to 401
+    forbidden()
+      ✓ should set response status to 403
+    notFound()
+      ✓ should set response status to 404
+    methodNotAllowed()
+      ✓ should set response status to 405
+    contentTypeNotAcceptable()
+      ✓ should set response status to 406
+    internalServerError()
+      ✓ should set response status to 500
+
+
+  212 passing (3m)
+  15 failing
+
+  1) Products Controller
+       getAllProducts()
+         should respond with JSON:
+
+      AssertionError: expected [ Array(25) ] to deeply equal [ Array(25) ]
+      + expected - actual
+
+       [
+         {
+      +    "__v": 0
+           "_id": "656632bc2e2d2345ef449f3d"
+           "description": "The Football Is Good For Training And Recreational Purposes"
+           "image": "http://placeimg.com/640/480/nature"
+           "name": "Fantastic Cotton Chair"
+           "price": 102
+         }
+         {
+      +    "__v": 0
+           "_id": "656632bc2e2d2345ef449f3e"
+           "description": "The beautiful range of Apple Naturalé that has an exciting mix of natural ingredients. With the Goodness of 100% Natural Ingredients"
+           "image": "http://placeimg.com/640/480/city"
+           "name": "Lovely Marble Car"
+           "price": 909
+         }
+         {
+      +    "__v": 0
+           "_id": "656632bc2e2d2345ef449f3f"
+           "description": "The automobile layout consists of a front-engine design, with transaxle-type transmissions mounted at the rear of the engine and four wheel drive"
+           "image": "http://placeimg.com/640/480/city"
+           "name": "Sleek Plastic Hat"
+           "price": 62.25
+         }
+         {
+      +    "__v": 0
+           "_id": "656632bc2e2d2345ef449f42"
+           "description": "The Nagasaki Lander is the trademarked name of several series of Nagasaki sport bikes, that started with the 1984 ABC800J"
+           "image": "http://placeimg.com/640/480/transport"
+           "name": "Ergonomic Metal Cheese"
+           "price": 83.1
+         }
+         {
+      +    "__v": 0
+           "_id": "656632bc2e2d2345ef449f40"
+           "description": "Andy shoes are designed to keeping in mind durability as well as trends, the most stylish range of shoes & sandals"
+           "image": "http://placeimg.com/640/480/food"
+           "name": "Awesome Wooden Shoes"
+           "price": 4.99
+         }
+         {
+      +    "__v": 0
+           "_id": "656632bc2e2d2345ef449f41"
+           "description": "The automobile layout consists of a front-engine design, with transaxle-type transmissions mounted at the rear of the engine and four wheel drive"
+           "image": "http://placeimg.com/640/480/fashion"
+           "name": "Small Cotton Chicken"
+           "price": 173.99
+         }
+         {
+      +    "__v": 0
+           "_id": "656632bc2e2d2345ef449f43"
+           "description": "Ergonomic executive chair upholstered in bonded black leather and PVC padded seat and back for all-day comfort and support"
+           "image": "http://placeimg.com/640/480/business"
+           "name": "Ergonomic Granite Duck"
+           "price": 729
+         }
+         {
+      +    "__v": 0
+           "_id": "656632bc2e2d2345ef449f44"
+           "description": "Carbonite web goalkeeper gloves are ergonomically designed to give easy fit"
+           "image": "http://placeimg.com/640/480/fashion"
+           "name": "Beautiful Frozen Salad"
+           "price": 0.75
+         }
+         {
+      +    "__v": 0
+           "_id": "656632bc2e2d2345ef449f45"
+           "description": "Ergonomic executive chair upholstered in bonded black leather and PVC padded seat and back for all-day comfort and support"
+           "image": "http://placeimg.com/640/480/city"
+           "name": "Ergonomic Plastic Bike"
+           "price": 56
+         }
+         {
+      +    "__v": 0
+           "_id": "656632bc2e2d2345ef449f46"
+           "description": "New range of formal shirts are designed keeping you in mind. With fits and styling that will make you stand apart"
+           "image": "http://placeimg.com/640/480/food"
+           "name": "Generic Cotton Chips"
+           "price": 1351
+         }
+         {
+      +    "__v": 0
+           "_id": "656632bc2e2d2345ef449f47"
+           "description": "New ABC 13 9370, 13.3, 5th Gen CoreA5-8250U, 8GB RAM, 256GB SSD, power UHD Graphics, OS 10 Home, OS Office A & J 2016"
+           "image": "http://placeimg.com/640/480/cats"
+           "name": "Incredible Wooden Towels"
+           "price": 97
+         }
+         {
+      +    "__v": 0
+           "_id": "656632bc2e2d2345ef449f48"
+           "description": "The beautiful range of Apple Naturalé that has an exciting mix of natural ingredients. With the Goodness of 100% Natural Ingredients"
+           "image": "http://placeimg.com/640/480/technics"
+           "name": "Tasty Granite Gloves"
+           "price": 480
+         }
+         {
+      +    "__v": 0
+           "_id": "656632bc2e2d2345ef449f49"
+           "description": "The Nagasaki Lander is the trademarked name of several series of Nagasaki sport bikes, that started with the 1984 ABC800J"
+           "image": "http://placeimg.com/640/480/sports"
+           "name": "Practical Steel Chicken"
+           "price": 886
+         }
+         {
+      +    "__v": 0
+           "_id": "656632bc2e2d2345ef449f4a"
+           "description": "Carbonite web goalkeeper gloves are ergonomically designed to give easy fit"
+           "image": "http://placeimg.com/640/480/business"
+           "name": "Handcrafted Metal Mouse"
+           "price": 567
+         }
+         {
+      +    "__v": 0
+           "_id": "656632bc2e2d2345ef449f4b"
+           "description": "The Apollotech B340 is an affordable wireless mouse with reliable connectivity, 12 months battery life and modern design"
+           "image": "http://placeimg.com/640/480/sports"
+           "name": "Sleek Metal Fish"
+           "price": 171
+         }
+         {
+      +    "__v": 0
+           "_id": "656632bc2e2d2345ef449f4c"
+           "description": "New ABC 13 9370, 13.3, 5th Gen CoreA5-8250U, 8GB RAM, 256GB SSD, power UHD Graphics, OS 10 Home, OS Office A & J 2016"
+           "image": "http://placeimg.com/640/480/animals"
+           "name": "Awesome Cotton Computer"
+           "price": 137
+         }
+         {
+      +    "__v": 0
+           "_id": "656632bc2e2d2345ef449f4d"
+           "description": "Carbonite web goalkeeper gloves are ergonomically designed to give easy fit"
+           "image": "http://placeimg.com/640/480/food"
+           "name": "Practical Plastic Mouse"
+           "price": 566
+         }
+         {
+      +    "__v": 0
+           "_id": "656632bc2e2d2345ef449f4e"
+           "description": "Ergonomic executive chair upholstered in bonded black leather and PVC padded seat and back for all-day comfort and support"
+           "image": "http://placeimg.com/640/480/city"
+           "name": "Flammable Plastic Gloves"
+           "price": 795
+         }
+         {
+      +    "__v": 0
+           "_id": "656632bc2e2d2345ef449f4f"
+           "description": "The Apollotech B340 is an affordable wireless mouse with reliable connectivity, 12 months battery life and modern design"
+           "image": "http://placeimg.com/640/480/fashion"
+           "name": "Intelligent Concrete Salad"
+           "price": 789
+         }
+         {
+      +    "__v": 0
+           "_id": "656632bc2e2d2345ef449f50"
+           "description": "New ABC 13 9370, 13.3, 5th Gen CoreA5-8250U, 8GB RAM, 256GB SSD, power UHD Graphics, OS 10 Home, OS Office A & J 2016"
+           "image": "http://placeimg.com/640/480/cats"
+           "name": "Rustic Metal Shoes"
+           "price": 309
+         }
+         {
+      +    "__v": 0
+           "_id": "656632bc2e2d2345ef449f51"
+           "description": "The Football Is Good For Training And Recreational Purposes"
+           "image": "http://placeimg.com/640/480/sports"
+           "name": "Generic Granite Sausages"
+           "price": 37.3
+         }
+         {
+      +    "__v": 0
+           "_id": "656632bc2e2d2345ef449f52"
+           "description": "Carbonite web goalkeeper gloves are ergonomically designed to give easy fit"
+           "image": "http://placeimg.com/640/480/nature"
+           "name": "Gorgeous Metal Towels"
+           "price": 93
+         }
+         {
+      +    "__v": 0
+           "_id": "656632bc2e2d2345ef449f53"
+           "description": "The automobile layout consists of a front-engine design, with transaxle-type transmissions mounted at the rear of the engine and four wheel drive"
+           "image": "http://placeimg.com/640/480/sports"
+           "name": "Awesome Soft Towels"
+           "price": 444
+         }
+         {
+      +    "__v": 0
+           "_id": "656632bc2e2d2345ef449f54"
+           "description": "Carbonite web goalkeeper gloves are ergonomically designed to give easy fit"
+           "image": "http://placeimg.com/640/480/animals"
+           "name": "Unbranded Soft Table"
+           "price": 8
+         }
+         {
+      +    "__v": 0
+           "_id": "656632bc2e2d2345ef449f55"
+           "description": "New ABC 13 9370, 13.3, 5th Gen CoreA5-8250U, 8GB RAM, 256GB SSD, power UHD Graphics, OS 10 Home, OS Office A & J 2016"
+           "image": "http://placeimg.com/640/480/sports"
+           "name": "Sleek Wooden Hat"
+      
+      at Context.<anonymous> (test/controllers/products.test.js:31:50)
+      at processTicksAndRejections (node:internal/process/task_queues:96:5)
+
+  2) .env
+       must define DBURL:
+     AssertionError: expected { Object (NVM_INC, MANPATH, ...) } to have property 'DBURL'
+      at Context.<anonymous> (test/models/env.test.js:8:33)
+      at processImmediate (node:internal/timers:466:21)
+
+  3) Routes
+       handleRequest()
+         Viewing all products: GET /api/products
+           should respond with correct data when admin credentials are received:
+
+      AssertionError: expected [ Array(25) ] to deeply equal [ Array(25) ]
+      + expected - actual
+
+       [
+         {
+      +    "__v": 0
+           "_id": "6566331e2e2d2345ef44bada"
+           "description": "The Football Is Good For Training And Recreational Purposes"
+           "image": "http://placeimg.com/640/480/nature"
+           "name": "Fantastic Cotton Chair"
+           "price": 102
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331e2e2d2345ef44badb"
+           "description": "The beautiful range of Apple Naturalé that has an exciting mix of natural ingredients. With the Goodness of 100% Natural Ingredients"
+           "image": "http://placeimg.com/640/480/city"
+           "name": "Lovely Marble Car"
+           "price": 909
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331e2e2d2345ef44badc"
+           "description": "The automobile layout consists of a front-engine design, with transaxle-type transmissions mounted at the rear of the engine and four wheel drive"
+           "image": "http://placeimg.com/640/480/city"
+           "name": "Sleek Plastic Hat"
+           "price": 62.25
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331e2e2d2345ef44bade"
+           "description": "The automobile layout consists of a front-engine design, with transaxle-type transmissions mounted at the rear of the engine and four wheel drive"
+           "image": "http://placeimg.com/640/480/fashion"
+           "name": "Small Cotton Chicken"
+           "price": 173.99
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331e2e2d2345ef44badf"
+           "description": "The Nagasaki Lander is the trademarked name of several series of Nagasaki sport bikes, that started with the 1984 ABC800J"
+           "image": "http://placeimg.com/640/480/transport"
+           "name": "Ergonomic Metal Cheese"
+           "price": 83.1
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331e2e2d2345ef44badd"
+           "description": "Andy shoes are designed to keeping in mind durability as well as trends, the most stylish range of shoes & sandals"
+           "image": "http://placeimg.com/640/480/food"
+           "name": "Awesome Wooden Shoes"
+           "price": 4.99
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331e2e2d2345ef44bae0"
+           "description": "Ergonomic executive chair upholstered in bonded black leather and PVC padded seat and back for all-day comfort and support"
+           "image": "http://placeimg.com/640/480/business"
+           "name": "Ergonomic Granite Duck"
+           "price": 729
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331e2e2d2345ef44bae1"
+           "description": "Carbonite web goalkeeper gloves are ergonomically designed to give easy fit"
+           "image": "http://placeimg.com/640/480/fashion"
+           "name": "Beautiful Frozen Salad"
+           "price": 0.75
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331e2e2d2345ef44bae3"
+           "description": "New range of formal shirts are designed keeping you in mind. With fits and styling that will make you stand apart"
+           "image": "http://placeimg.com/640/480/food"
+           "name": "Generic Cotton Chips"
+           "price": 1351
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331e2e2d2345ef44bae2"
+           "description": "Ergonomic executive chair upholstered in bonded black leather and PVC padded seat and back for all-day comfort and support"
+           "image": "http://placeimg.com/640/480/city"
+           "name": "Ergonomic Plastic Bike"
+           "price": 56
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331e2e2d2345ef44bae5"
+           "description": "The beautiful range of Apple Naturalé that has an exciting mix of natural ingredients. With the Goodness of 100% Natural Ingredients"
+           "image": "http://placeimg.com/640/480/technics"
+           "name": "Tasty Granite Gloves"
+           "price": 480
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331e2e2d2345ef44bae4"
+           "description": "New ABC 13 9370, 13.3, 5th Gen CoreA5-8250U, 8GB RAM, 256GB SSD, power UHD Graphics, OS 10 Home, OS Office A & J 2016"
+           "image": "http://placeimg.com/640/480/cats"
+           "name": "Incredible Wooden Towels"
+           "price": 97
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331e2e2d2345ef44bae6"
+           "description": "The Nagasaki Lander is the trademarked name of several series of Nagasaki sport bikes, that started with the 1984 ABC800J"
+           "image": "http://placeimg.com/640/480/sports"
+           "name": "Practical Steel Chicken"
+           "price": 886
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331e2e2d2345ef44bae7"
+           "description": "Carbonite web goalkeeper gloves are ergonomically designed to give easy fit"
+           "image": "http://placeimg.com/640/480/business"
+           "name": "Handcrafted Metal Mouse"
+           "price": 567
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331e2e2d2345ef44baea"
+           "description": "Carbonite web goalkeeper gloves are ergonomically designed to give easy fit"
+           "image": "http://placeimg.com/640/480/food"
+           "name": "Practical Plastic Mouse"
+           "price": 566
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331e2e2d2345ef44bae8"
+           "description": "The Apollotech B340 is an affordable wireless mouse with reliable connectivity, 12 months battery life and modern design"
+           "image": "http://placeimg.com/640/480/sports"
+           "name": "Sleek Metal Fish"
+           "price": 171
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331e2e2d2345ef44bae9"
+           "description": "New ABC 13 9370, 13.3, 5th Gen CoreA5-8250U, 8GB RAM, 256GB SSD, power UHD Graphics, OS 10 Home, OS Office A & J 2016"
+           "image": "http://placeimg.com/640/480/animals"
+           "name": "Awesome Cotton Computer"
+           "price": 137
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331e2e2d2345ef44baec"
+           "description": "The Apollotech B340 is an affordable wireless mouse with reliable connectivity, 12 months battery life and modern design"
+           "image": "http://placeimg.com/640/480/fashion"
+           "name": "Intelligent Concrete Salad"
+           "price": 789
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331e2e2d2345ef44baeb"
+           "description": "Ergonomic executive chair upholstered in bonded black leather and PVC padded seat and back for all-day comfort and support"
+           "image": "http://placeimg.com/640/480/city"
+           "name": "Flammable Plastic Gloves"
+           "price": 795
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331e2e2d2345ef44baed"
+           "description": "New ABC 13 9370, 13.3, 5th Gen CoreA5-8250U, 8GB RAM, 256GB SSD, power UHD Graphics, OS 10 Home, OS Office A & J 2016"
+           "image": "http://placeimg.com/640/480/cats"
+           "name": "Rustic Metal Shoes"
+           "price": 309
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331e2e2d2345ef44baee"
+           "description": "The Football Is Good For Training And Recreational Purposes"
+           "image": "http://placeimg.com/640/480/sports"
+           "name": "Generic Granite Sausages"
+           "price": 37.3
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331e2e2d2345ef44baf0"
+           "description": "The automobile layout consists of a front-engine design, with transaxle-type transmissions mounted at the rear of the engine and four wheel drive"
+           "image": "http://placeimg.com/640/480/sports"
+           "name": "Awesome Soft Towels"
+           "price": 444
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331e2e2d2345ef44baf2"
+           "description": "New ABC 13 9370, 13.3, 5th Gen CoreA5-8250U, 8GB RAM, 256GB SSD, power UHD Graphics, OS 10 Home, OS Office A & J 2016"
+           "image": "http://placeimg.com/640/480/sports"
+           "name": "Sleek Wooden Hat"
+           "price": 748
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331e2e2d2345ef44baef"
+           "description": "Carbonite web goalkeeper gloves are ergonomically designed to give easy fit"
+           "image": "http://placeimg.com/640/480/nature"
+           "name": "Gorgeous Metal Towels"
+           "price": 93
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331e2e2d2345ef44baf1"
+           "description": "Carbonite web goalkeeper gloves are ergonomically designed to give easy fit"
+           "image": "http://placeimg.com/640/480/animals"
+           "name": "Unbranded Soft Table"
+      
+      at Context.<anonymous> (test/routes.test.js:860:42)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:96:5)
+
+  4) Routes
+       handleRequest()
+         Viewing all products: GET /api/products
+           should respond with correct data when customer credentials are received:
+
+      AssertionError: expected [ Array(25) ] to deeply equal [ Array(25) ]
+      + expected - actual
+
+       [
+         {
+      +    "__v": 0
+           "_id": "6566331f2e2d2345ef44bb46"
+           "description": "The Football Is Good For Training And Recreational Purposes"
+           "image": "http://placeimg.com/640/480/nature"
+           "name": "Fantastic Cotton Chair"
+           "price": 102
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331f2e2d2345ef44bb47"
+           "description": "The beautiful range of Apple Naturalé that has an exciting mix of natural ingredients. With the Goodness of 100% Natural Ingredients"
+           "image": "http://placeimg.com/640/480/city"
+           "name": "Lovely Marble Car"
+           "price": 909
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331f2e2d2345ef44bb48"
+           "description": "The automobile layout consists of a front-engine design, with transaxle-type transmissions mounted at the rear of the engine and four wheel drive"
+           "image": "http://placeimg.com/640/480/city"
+           "name": "Sleek Plastic Hat"
+           "price": 62.25
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331f2e2d2345ef44bb49"
+           "description": "Andy shoes are designed to keeping in mind durability as well as trends, the most stylish range of shoes & sandals"
+           "image": "http://placeimg.com/640/480/food"
+           "name": "Awesome Wooden Shoes"
+           "price": 4.99
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331f2e2d2345ef44bb4a"
+           "description": "The automobile layout consists of a front-engine design, with transaxle-type transmissions mounted at the rear of the engine and four wheel drive"
+           "image": "http://placeimg.com/640/480/fashion"
+           "name": "Small Cotton Chicken"
+           "price": 173.99
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331f2e2d2345ef44bb4b"
+           "description": "The Nagasaki Lander is the trademarked name of several series of Nagasaki sport bikes, that started with the 1984 ABC800J"
+           "image": "http://placeimg.com/640/480/transport"
+           "name": "Ergonomic Metal Cheese"
+           "price": 83.1
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331f2e2d2345ef44bb4c"
+           "description": "Ergonomic executive chair upholstered in bonded black leather and PVC padded seat and back for all-day comfort and support"
+           "image": "http://placeimg.com/640/480/business"
+           "name": "Ergonomic Granite Duck"
+           "price": 729
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331f2e2d2345ef44bb4d"
+           "description": "Carbonite web goalkeeper gloves are ergonomically designed to give easy fit"
+           "image": "http://placeimg.com/640/480/fashion"
+           "name": "Beautiful Frozen Salad"
+           "price": 0.75
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331f2e2d2345ef44bb4e"
+           "description": "Ergonomic executive chair upholstered in bonded black leather and PVC padded seat and back for all-day comfort and support"
+           "image": "http://placeimg.com/640/480/city"
+           "name": "Ergonomic Plastic Bike"
+           "price": 56
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331f2e2d2345ef44bb4f"
+           "description": "New range of formal shirts are designed keeping you in mind. With fits and styling that will make you stand apart"
+           "image": "http://placeimg.com/640/480/food"
+           "name": "Generic Cotton Chips"
+           "price": 1351
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331f2e2d2345ef44bb50"
+           "description": "New ABC 13 9370, 13.3, 5th Gen CoreA5-8250U, 8GB RAM, 256GB SSD, power UHD Graphics, OS 10 Home, OS Office A & J 2016"
+           "image": "http://placeimg.com/640/480/cats"
+           "name": "Incredible Wooden Towels"
+           "price": 97
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331f2e2d2345ef44bb51"
+           "description": "The beautiful range of Apple Naturalé that has an exciting mix of natural ingredients. With the Goodness of 100% Natural Ingredients"
+           "image": "http://placeimg.com/640/480/technics"
+           "name": "Tasty Granite Gloves"
+           "price": 480
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331f2e2d2345ef44bb52"
+           "description": "The Nagasaki Lander is the trademarked name of several series of Nagasaki sport bikes, that started with the 1984 ABC800J"
+           "image": "http://placeimg.com/640/480/sports"
+           "name": "Practical Steel Chicken"
+           "price": 886
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331f2e2d2345ef44bb54"
+           "description": "The Apollotech B340 is an affordable wireless mouse with reliable connectivity, 12 months battery life and modern design"
+           "image": "http://placeimg.com/640/480/sports"
+           "name": "Sleek Metal Fish"
+           "price": 171
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331f2e2d2345ef44bb53"
+           "description": "Carbonite web goalkeeper gloves are ergonomically designed to give easy fit"
+           "image": "http://placeimg.com/640/480/business"
+           "name": "Handcrafted Metal Mouse"
+           "price": 567
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331f2e2d2345ef44bb56"
+           "description": "Carbonite web goalkeeper gloves are ergonomically designed to give easy fit"
+           "image": "http://placeimg.com/640/480/food"
+           "name": "Practical Plastic Mouse"
+           "price": 566
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331f2e2d2345ef44bb55"
+           "description": "New ABC 13 9370, 13.3, 5th Gen CoreA5-8250U, 8GB RAM, 256GB SSD, power UHD Graphics, OS 10 Home, OS Office A & J 2016"
+           "image": "http://placeimg.com/640/480/animals"
+           "name": "Awesome Cotton Computer"
+           "price": 137
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331f2e2d2345ef44bb57"
+           "description": "Ergonomic executive chair upholstered in bonded black leather and PVC padded seat and back for all-day comfort and support"
+           "image": "http://placeimg.com/640/480/city"
+           "name": "Flammable Plastic Gloves"
+           "price": 795
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331f2e2d2345ef44bb58"
+           "description": "The Apollotech B340 is an affordable wireless mouse with reliable connectivity, 12 months battery life and modern design"
+           "image": "http://placeimg.com/640/480/fashion"
+           "name": "Intelligent Concrete Salad"
+           "price": 789
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331f2e2d2345ef44bb59"
+           "description": "New ABC 13 9370, 13.3, 5th Gen CoreA5-8250U, 8GB RAM, 256GB SSD, power UHD Graphics, OS 10 Home, OS Office A & J 2016"
+           "image": "http://placeimg.com/640/480/cats"
+           "name": "Rustic Metal Shoes"
+           "price": 309
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331f2e2d2345ef44bb5a"
+           "description": "The Football Is Good For Training And Recreational Purposes"
+           "image": "http://placeimg.com/640/480/sports"
+           "name": "Generic Granite Sausages"
+           "price": 37.3
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331f2e2d2345ef44bb5b"
+           "description": "Carbonite web goalkeeper gloves are ergonomically designed to give easy fit"
+           "image": "http://placeimg.com/640/480/nature"
+           "name": "Gorgeous Metal Towels"
+           "price": 93
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331f2e2d2345ef44bb5c"
+           "description": "The automobile layout consists of a front-engine design, with transaxle-type transmissions mounted at the rear of the engine and four wheel drive"
+           "image": "http://placeimg.com/640/480/sports"
+           "name": "Awesome Soft Towels"
+           "price": 444
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331f2e2d2345ef44bb5e"
+           "description": "New ABC 13 9370, 13.3, 5th Gen CoreA5-8250U, 8GB RAM, 256GB SSD, power UHD Graphics, OS 10 Home, OS Office A & J 2016"
+           "image": "http://placeimg.com/640/480/sports"
+           "name": "Sleek Wooden Hat"
+           "price": 748
+         }
+         {
+      +    "__v": 0
+           "_id": "6566331f2e2d2345ef44bb5d"
+           "description": "Carbonite web goalkeeper gloves are ergonomically designed to give easy fit"
+           "image": "http://placeimg.com/640/480/animals"
+           "name": "Unbranded Soft Table"
+      
+      at Context.<anonymous> (test/routes.test.js:873:42)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:96:5)
+
+  5) Routes
+       handleRequest()
+         Updating products: PUT /api/products/{id}
+           should allow partial update of product properties:
+
+      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 200 but got 400
+      + expected - actual
+
+      -400
+      +200
+      
+      at Context.<anonymous> (test/routes.test.js:1084:34)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:96:5)
+
+  6) Routes
+       handleRequest()
+         Deleting products: DELETE /api/products/{id}
+           should return the deleted user:
+
+      AssertionError: expected { Object (_id, name, ...) } to have keys '_id', 'name', 'price', 'image', and 'description'
+      + expected - actual
+
+       [
+      -  "__v"
+         "_id"
+         "description"
+         "image"
+         "name"
+      
+      at Context.<anonymous> (test/routes.test.js:1258:43)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:96:5)
+
+  7) Routes
+       handleRequest()
+         Create a new product: POST /api/products
+           should respond with "201 Created" when product creation is successful:
+
+      AssertionError: expected { Object (_id, name, ...) } to have keys '_id', 'name', 'price', 'description', and 'image'
+      + expected - actual
+
+       [
+      -  "__v"
+         "_id"
+         "description"
+         "image"
+         "name"
+      
+      at Context.<anonymous> (test/routes.test.js:1406:43)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:96:5)
+
+  8) Routes
+       handleRequest()
+         Viewing all orders: GET /api/orders
+           should respond with correct data when customer credentials are received:
+
+      AssertionError: expected [ Array(10) ] to deeply equal [ Array(1) ]
+      + expected - actual
+
+       [
+         {
+           "__v": 0
+      -    "_id": "6566335d2e2d2345ef44d108"
+      -    "customerId": "6566335c2e2d2345ef44d0c3"
+      -    "items": [
+      -      {
+      -        "_id": "6566335d2e2d2345ef44d109"
+      -        "product": {
+      -          "_id": "6566335d2e2d2345ef44d0d5"
+      -          "description": "The beautiful range of Apple Naturalé that has an exciting mix of natural ingredients. With the Goodness of 100% Natural Ingredients"
+      -          "name": "Lovely Marble Car"
+      -          "price": 909
+      -        }
+      -        "quantity": 2
+      -      }
+      -    ]
+      -  }
+      -  {
+      -    "__v": 0
+      -    "_id": "6566335d2e2d2345ef44d10a"
+      -    "customerId": "6566335c2e2d2345ef44d0c2"
+      -    "items": [
+      -      {
+      -        "_id": "6566335d2e2d2345ef44d10b"
+      -        "product": {
+      -          "_id": "6566335d2e2d2345ef44d0d5"
+      -          "description": "The beautiful range of Apple Naturalé that has an exciting mix of natural ingredients. With the Goodness of 100% Natural Ingredients"
+      -          "name": "Lovely Marble Car"
+      -          "price": 909
+      -        }
+      -        "quantity": 1
+      -      }
+      -    ]
+      -  }
+      -  {
+      -    "__v": 0
+      -    "_id": "6566335d2e2d2345ef44d10c"
+      -    "customerId": "6566335d2e2d2345ef44d0c4"
+      -    "items": [
+      -      {
+      -        "_id": "6566335d2e2d2345ef44d10d"
+      -        "product": {
+      -          "_id": "6566335d2e2d2345ef44d0d5"
+      -          "description": "The beautiful range of Apple Naturalé that has an exciting mix of natural ingredients. With the Goodness of 100% Natural Ingredients"
+      -          "name": "Lovely Marble Car"
+      -          "price": 909
+      -        }
+      -        "quantity": 2
+      -      }
+      -    ]
+      -  }
+      -  {
+      -    "__v": 0
+      -    "_id": "6566335d2e2d2345ef44d10e"
+      -    "customerId": "6566335c2e2d2345ef44d0be"
+      -    "items": [
+      -      {
+      -        "_id": "6566335d2e2d2345ef44d10f"
+      -        "product": {
+      -          "_id": "6566335d2e2d2345ef44d0d5"
+      -          "description": "The beautiful range of Apple Naturalé that has an exciting mix of natural ingredients. With the Goodness of 100% Natural Ingredients"
+      -          "name": "Lovely Marble Car"
+      -          "price": 909
+      -        }
+      -        "quantity": 5
+      -      }
+      -    ]
+      -  }
+      -  {
+      -    "__v": 0
+      -    "_id": "6566335d2e2d2345ef44d112"
+      -    "customerId": "6566335c2e2d2345ef44d0c1"
+      -    "items": [
+      -      {
+      -        "_id": "6566335d2e2d2345ef44d113"
+      -        "product": {
+      -          "_id": "6566335d2e2d2345ef44d0d5"
+      -          "description": "The beautiful range of Apple Naturalé that has an exciting mix of natural ingredients. With the Goodness of 100% Natural Ingredients"
+      -          "name": "Lovely Marble Car"
+      -          "price": 909
+      -        }
+      -        "quantity": 1
+      -      }
+      -    ]
+      -  }
+      -  {
+      -    "__v": 0
+      -    "_id": "6566335d2e2d2345ef44d110"
+      -    "customerId": "6566335d2e2d2345ef44d0c5"
+      -    "items": [
+      -      {
+      -        "_id": "6566335d2e2d2345ef44d111"
+      -        "product": {
+      -          "_id": "6566335d2e2d2345ef44d0d5"
+      -          "description": "The beautiful range of Apple Naturalé that has an exciting mix of natural ingredients. With the Goodness of 100% Natural Ingredients"
+      -          "name": "Lovely Marble Car"
+      -          "price": 909
+      -        }
+      -        "quantity": 3
+      -      }
+      -    ]
+      -  }
+      -  {
+      -    "__v": 0
+      -    "_id": "6566335d2e2d2345ef44d114"
+      -    "customerId": "6566335d2e2d2345ef44d0c7"
+      -    "items": [
+      -      {
+      -        "_id": "6566335d2e2d2345ef44d115"
+      -        "product": {
+      -          "_id": "6566335d2e2d2345ef44d0d5"
+      -          "description": "The beautiful range of Apple Naturalé that has an exciting mix of natural ingredients. With the Goodness of 100% Natural Ingredients"
+      -          "name": "Lovely Marble Car"
+      -          "price": 909
+      -        }
+      -        "quantity": 5
+      -      }
+      -    ]
+      -  }
+      -  {
+      -    "__v": 0
+      -    "_id": "6566335d2e2d2345ef44d116"
+      -    "customerId": "6566335d2e2d2345ef44d0c6"
+      -    "items": [
+      -      {
+      -        "_id": "6566335d2e2d2345ef44d117"
+      -        "product": {
+      -          "_id": "6566335d2e2d2345ef44d0d5"
+      -          "description": "The beautiful range of Apple Naturalé that has an exciting mix of natural ingredients. With the Goodness of 100% Natural Ingredients"
+      -          "name": "Lovely Marble Car"
+      -          "price": 909
+      -        }
+      -        "quantity": 3
+      -      }
+      -    ]
+      -  }
+      -  {
+      -    "__v": 0
+      -    "_id": "6566335d2e2d2345ef44d118"
+      -    "customerId": "6566335c2e2d2345ef44d0c0"
+      -    "items": [
+      -      {
+      -        "_id": "6566335d2e2d2345ef44d119"
+      -        "product": {
+      -          "_id": "6566335d2e2d2345ef44d0d5"
+      -          "description": "The beautiful range of Apple Naturalé that has an exciting mix of natural ingredients. With the Goodness of 100% Natural Ingredients"
+      -          "name": "Lovely Marble Car"
+      -          "price": 909
+      -        }
+      -        "quantity": 5
+      -      }
+      -    ]
+      -  }
+      -  {
+      -    "__v": 0
+           "_id": "6566335d2e2d2345ef44d11a"
+           "customerId": "6566335c2e2d2345ef44d0bf"
+           "items": [
+             {
+      
+      at Context.<anonymous> (test/routes.test.js:1539:42)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:96:5)
+
+  9) Routes
+       handleRequest()
+         Viewing a single order: GET /api/orders/{id}
+           should respond with JSON when admin credentials are received:
+
+      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 200 but got 500
+      + expected - actual
+
+      -500
+      +200
+      
+      at Context.<anonymous> (test/routes.test.js:1615:34)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:96:5)
+
+  10) Routes
+       handleRequest()
+         Viewing a single order: GET /api/orders/{id}
+           should respond with JSON when customer credentials are received:
+
+      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 200 but got 500
+      + expected - actual
+
+      -500
+      +200
+      
+      at Context.<anonymous> (test/routes.test.js:1629:34)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:96:5)
+
+  11) Routes
+       handleRequest()
+         Viewing a single order: GET /api/orders/{id}
+           should respond with status code 404 when order does not exist:
+
+      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 404 but got 500
+      + expected - actual
+
+      -500
+      +404
+      
+      at Context.<anonymous> (test/routes.test.js:1642:34)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:96:5)
+
+  12) Routes
+       handleRequest()
+         Viewing a single order: GET /api/orders/{id}
+           should respond with status code 404 when order exists but the owner is not the current customer:
+
+      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 404 but got 500
+      + expected - actual
+
+      -500
+      +404
+      
+      at Context.<anonymous> (test/routes.test.js:1655:34)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:96:5)
+
+  13) Routes
+       handleRequest()
+         Create a new order: POST /api/orders
+           should respond with "201 Created" when order creation is successful:
+     SyntaxError: Unexpected token u in JSON at position 0
+      at JSON.parse (<anonymous>)
+      at Context.<anonymous> (test/routes.test.js:1854:32)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:96:5)
+
+  14) User Inteface
+       "before all" hook in "User Inteface":
+     Uncaught Error: listen EADDRINUSE: address already in use :::3000
+      at Server.setupListenHandle [as _listen2] (node:net:1463:16)
+      at listenInCluster (node:net:1511:12)
+      at Server.listen (node:net:1599:7)
+      at Context.<anonymous> (test/ui.test.js:73:12)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:96:5)
+
+  15) User Inteface
+       "before all" hook in "User Inteface":
+     done() called multiple times in hook <User Inteface "before all" hook in "User Inteface"> of file /Users/amyo/Documents/webdevgroup/webdev1-fall2023-group002/test/ui.test.js; in addition, done() received error: Error: Failed to launch the browser process! spawn /usr/bin/chromium-browser ENOENT
+
+
+TROUBLESHOOTING: https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md
+
+    at onClose (/Users/amyo/Documents/webdevgroup/webdev1-fall2023-group002/node_modules/puppeteer/lib/cjs/puppeteer/node/BrowserRunner.js:193:20)
+    at ChildProcess.<anonymous> (/Users/amyo/Documents/webdevgroup/webdev1-fall2023-group002/node_modules/puppeteer/lib/cjs/puppeteer/node/BrowserRunner.js:185:85)
+    at ChildProcess.emit (node:events:513:28)
+    at Process.ChildProcess._handle.onexit (node:internal/child_process:291:12)
+    at onErrorNT (node:internal/child_process:485:16)
+    at processTicksAndRejections (node:internal/process/task_queues:83:21)
+  Error: done() called multiple times in hook <User Inteface "before all" hook in "User Inteface"> of file /Users/amyo/Documents/webdevgroup/webdev1-fall2023-group002/test/ui.test.js; in addition, done() received error: Error: Failed to launch the browser process! spawn /usr/bin/chromium-browser ENOENT
+  
+  
+  TROUBLESHOOTING: https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md
+  
+      at onClose (node_modules/puppeteer/lib/cjs/puppeteer/node/BrowserRunner.js:193:20)
+      at ChildProcess.<anonymous> (node_modules/puppeteer/lib/cjs/puppeteer/node/BrowserRunner.js:185:85)
+      at ChildProcess.emit (node:events:513:28)
+      at Process.ChildProcess._handle.onexit (node:internal/child_process:291:12)
+      at onErrorNT (node:internal/child_process:485:16)
+      at processTicksAndRejections (node:internal/process/task_queues:83:21)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:96:5)
+
+
+
