@@ -15,7 +15,7 @@ const getAllUsers = async (response) => {
  *
  * @param {http.ServerResponse} response response of the function
  * @param {string} userId id of deleted user
- * @param {Object} currentUser (mongoose document object)
+ * @param {object} currentUser (mongoose document object)
  */
 const deleteUser = async (response, userId, currentUser) => {
   const user = await User.findById(userId).exec();
@@ -41,8 +41,8 @@ const deleteUser = async (response, userId, currentUser) => {
  *
  * @param {http.ServerResponse} response response of the function
  * @param {string} userId id of updated user
- * @param {Object} currentUser (mongoose document object)
- * @param {Object} userData JSON data from request body
+ * @param {object} currentUser (mongoose document object)
+ * @param {object} userData JSON data from request body
  */
 const updateUser = async (response, userId, currentUser, userData) => {
   const user = await User.findById(userId).exec();
@@ -88,7 +88,7 @@ const updateUser = async (response, userId, currentUser, userData) => {
  *
  * @param {http.ServerResponse} response response of the function
  * @param {string} userId id of viewed user
- * @param {Object} currentUser (mongoose document object)
+ * @param {object} currentUser (mongoose document object)
  */
 const viewUser = async (response, userId, currentUser) => {
   const user = await User.findById(userId).exec();
@@ -107,7 +107,7 @@ const viewUser = async (response, userId, currentUser) => {
  * Register new user and send created user back as JSON
  *
  * @param {http.ServerResponse} response response of the function
- * @param {Object} userData JSON data from request body
+ * @param {object} userData JSON data from request body
  */
 const registerUser = async (response, userData) => {
   const isValidEmail = (email) => {
