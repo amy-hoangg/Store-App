@@ -3,9 +3,10 @@ const User = require('../models/user');
 
 /**
  * Get current user based on the request headers
- *
- * @param {http.IncomingMessage} request
- * @returns {Object|null} current authenticated user or null if not yet authenticated
+ * 
+ * @typedef {import('http').IncomingMessage} IncomingMessage
+ * @param {IncomingMessage} request method take the request as the parameter
+ * @returns {object|null} current authenticated user or null if not yet authenticated
  */
 // eslint-disable-next-line require-await
 const getCurrentUser = async request => {

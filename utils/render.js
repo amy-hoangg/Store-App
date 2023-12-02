@@ -6,9 +6,9 @@ const NOT_FOUND_TEMPLATE = path.resolve(__dirname, '../public/404.html');
 /**
  * Render file from ./public directory (calls response.end())
  *
- * @param {string} filePath
- * @param {http.ServerResponse} response
- * @returns {void}
+ * @param {string} filePath file path from ./public directory
+ * @param {http.ServerResponse} response response of the function
+ * @returns {void} 
  */
 const renderPublic = (filePath, response) => {
   if (!filePath) return renderNotFound(response);
@@ -24,7 +24,7 @@ const renderPublic = (filePath, response) => {
 /**
  * Render ../views/404.html (calls response.end())
  *
- * @param {http.ServerResponse} response
+ * @param {http.ServerResponse} response response of the function
  * @returns {void}
  */
 const renderNotFound = response => {
@@ -34,7 +34,7 @@ const renderNotFound = response => {
 /**
  * Get Content-Type based on file extension
  *
- * @param {string} fileExtension
+ * @param {string} fileExtension file extension
  * @returns {string} contentType
  */
 const getContentType = fileExtension => {

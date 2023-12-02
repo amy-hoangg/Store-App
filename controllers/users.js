@@ -3,7 +3,7 @@ const responseUtils = require("../utils/responseUtils");
 /**
  * Send all users as JSON
  *
- * @param {http.ServerResponse} response
+ * @param {http.ServerResponse} response response of function
  */
 const getAllUsers = async (response) => {
   const users = await User.find({});
@@ -13,8 +13,8 @@ const getAllUsers = async (response) => {
 /**
  * Delete user and send deleted user as JSON
  *
- * @param {http.ServerResponse} response
- * @param {string} userId
+ * @param {http.ServerResponse} response response of the function
+ * @param {string} userId id of deleted user
  * @param {Object} currentUser (mongoose document object)
  */
 const deleteUser = async (response, userId, currentUser) => {
@@ -39,8 +39,8 @@ const deleteUser = async (response, userId, currentUser) => {
 /**
  * Update user and send updated user as JSON
  *
- * @param {http.ServerResponse} response
- * @param {string} userId
+ * @param {http.ServerResponse} response response of the function
+ * @param {string} userId id of updated user
  * @param {Object} currentUser (mongoose document object)
  * @param {Object} userData JSON data from request body
  */
@@ -86,8 +86,8 @@ const updateUser = async (response, userId, currentUser, userData) => {
 /**
  * Send user data as JSON
  *
- * @param {http.ServerResponse} response
- * @param {string} userId
+ * @param {http.ServerResponse} response response of the function
+ * @param {string} userId id of viewed user
  * @param {Object} currentUser (mongoose document object)
  */
 const viewUser = async (response, userId, currentUser) => {
@@ -106,7 +106,7 @@ const viewUser = async (response, userId, currentUser) => {
 /**
  * Register new user and send created user back as JSON
  *
- * @param {http.ServerResponse} response
+ * @param {http.ServerResponse} response response of the function
  * @param {Object} userData JSON data from request body
  */
 const registerUser = async (response, userData) => {
