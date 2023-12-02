@@ -1,29 +1,45 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const productSchema = new mongoose.Schema({
+
+
+const SCHEMA_DEFAULTS = {
+  name: {
+    minLength: 1,
+    maxLength: 50
+  },
+};
+
+const productSchema = new Schema({
   name: {
     type: String,
     required: true,
+    trim: true,
+    minLength: SCHEMA_DEFAULTS.name.minLength,
+    maxLength: SCHEMA_DEFAULTS.name.maxLength,
   },
+
   price: {
     type: Number,
     required: true,
-    min: 0, // Minimum price should be greater than 0
-    // Here, you might also consider using a custom getter/setter to handle the price format as needed
-    // For instance, you could divide the stored price by 100 to convert it to Euros and cents format
-    // Or handle it based on your application's specific requirements.
+    validate: {
+      validator: function (n) {
+        return n > 0;
+      },
+      message: 'price cannot be 0'
+    }
   },
+
   image: {
-    type: String,
-    required: true,
-    format: 'uri', // Not enforced by Mongoose, just for reference
+    type: String
   },
+
   description: {
-    type: String,
-    required: true,
-  },
+    type: String
+  }
 });
 
-const Product = mongoose.model('Product', productSchema);
+productSchema.set('toJSON', { virtuals: false, versionKey: false });
 
+const Product = new mongoose.model('Product', productSchema);
 module.exports = Product;

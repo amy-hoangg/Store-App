@@ -1,67 +1,82 @@
 const Product = require('../models/product');
 const responseUtils = require('../utils/responseUtils');
 
-const getAllProducts = async (response) => {
-    const products = await Product.find({});
-    return responseUtils.sendJson(response, products);
+
+/**
+ * Send all products as JSON
+ *
+ * @typedef {import('http').ServerResponse} ServerResponse
+ * @param {ServerResponse} response the http response
+ */
+const getAllProducts = async response => {
+  return responseUtils.sendJson(response, await Product.find({}));
 };
 
-const deleteProduct = async (response, productId, currentUser) => {
-    const product = await Product.findById(productId).exec();
-
-    if (!product) {
-      return responseUtils.notFound(response);
-    }
-
-    const productToDelete = await Product.findByIdAndDelete(productId);
-    return responseUtils.sendJson(response, productToDelete);
-};
-
-const updateProduct = async (response, productId, currentUser, productData) => {
-    const product = await Product.findById(productId).exec();
-    
-    if (currentUser.role === "customer") {
-      return responseUtils.forbidden(response);
-    }
-
-    if (!product) {
-      return responseUtils.notFound(response);
-    }
-
-    if (currentUser._id.equals(productId)) {
-      return responseUtils.badRequest(response, "Updating own data is not allowed");
-    }
-
-    if (!productData.name || !productData.price || !productData.image || !productData.description) {
-      return responseUtils.badRequest(response, "Incomplete product data");
-    }
-
-    product.name = productData.name;
-    product.price = productData.price;
-    product.image = productData.image;
-    product.description = productData.description;
-
-    await product.save();
-    return responseUtils.sendJson(response, product);
-};
-
-const viewProduct = async (response, productId) => {
-    const product = await Product.findById(productId).exec();
-
-    if (!product) {
-      return responseUtils.notFound(response);
-    }
-    return responseUtils.sendJson(response, product);
-};
-
+/**
+ * Add new product and send created product back as JSON
+ *
+ * @typedef {import('http').ServerResponse} ServerResponse
+ * @param {ServerResponse} response the http response
+ * @param {object} productData JSON data from request body
+ */
 const registerProduct = async (response, productData) => {
-    if (!productData.name || !productData.price || !productData.image || !productData.description) {
-      return responseUtils.badRequest(response, "Incomplete product data");
-    }
+  try {
+    const newProduct = new Product({...productData});
+    return responseUtils.sendJson(response, await newProduct.save(), 201);
+  } catch (error) {
+    return responseUtils.badRequest(response, error);
+  }
+};
 
-    const newProduct = new Product(productData);
-    await newProduct.save();
-    return responseUtils.sendJson(response, newProduct, 201);
+/**
+ * Delete a product with the given ID.
+ *
+ * @param {http.ServerResponse} response response of function
+ * @param {object} productData JSON data from request body
+ */
+const deleteProduct = async (response, productID) => {
+  const productToDelete = await Product.findOne({ _id : productID }).exec();
+  
+  if (productToDelete === null) {
+    return responseUtils.notFound(response);
+  }
+
+  await Product.deleteOne({_id : productID}).exec();
+  return responseUtils.sendJson(response, productToDelete);
+};
+
+/**
+ * 
+ * @param {http.ServerResponse} response response of function
+ * @param {string} productID id of viewed product
+ * @returns return bad-request or informative response
+ */
+const viewProduct = async (response, productID) => {
+  const product = await Product.findOne({ _id : productID}).exec();
+
+  if (product === null) return responseUtils.notFound(response);
+  
+  return responseUtils.sendJson(response, product);
+};
+
+const updateProduct = async (response, productID, productData) => {
+
+  const product = await Product.findOne({ _id : productID}).exec();
+
+  if (product === null) return responseUtils.notFound(response);
+
+  try {
+    // if ('name' in productData && (!(productData['name'] instanceof String) || productData['name'].length === 0)) {
+    //   return responseUtils.badRequest(response);
+    // }
+
+    Object.keys(productData).forEach(key => {
+      product[key] = productData[key];
+    });
+    return responseUtils.sendJson(response, await product.save());
+  } catch (error) {
+    return responseUtils.badRequest(response, "Invalid request");
+  }
 };
 
 module.exports = { getAllProducts, registerProduct, deleteProduct, viewProduct, updateProduct };
