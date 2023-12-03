@@ -31,20 +31,14 @@ const viewOrder = async (response, id, currentUser) => {
 
 const registerOrder = async (response, currentUser, orderData) => {
   try {
-      if (
-        orderData.items.length === 0 ||
-        orderData.items.some((item) => {
-          return !item.product.name || !item.product.price;
-        })
-      ) {
-        return badRequest(response, "400 Bad Request");
-      }
-
-      const newOrder = new Order({ ...orderData, customerId: currentUser._id });
-      await newOrder.save();
-      return sendJson(response, newOrder, 201);
-    } catch (e) {
-      return badRequest(response, "400 Bad Request");
+    if ( orderData.items.length === 0) {
+      return responseUtils.badRequest(response, "Incomplete order data");
+    }
+    const newOrder = new Order({...orderData, customerId : currentUser._id});
+    await newOrder.save();
+    return responseUtils.sendJson(response, newOrder, 201);
+  } catch (error) {
+    return responseUtils.badRequest(response, error);
   }
 };
 module.exports = { getAllOrders, getUserOrders, registerOrder, viewOrder };
