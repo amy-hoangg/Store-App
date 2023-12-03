@@ -391,7 +391,7 @@ const handleRequest = async (request, response) => {
 
     const body = await parseBodyJson(request);
     try {
-      return await registerOrder(response, body);
+      return await registerOrder(response, currentUser, body);
     } catch (error) {
       responseUtils.badRequest(response);
     }

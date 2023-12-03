@@ -7,30 +7,35 @@ const getAllOrders = async (response) => {
 };
 
 const getUserOrders = async (response, currentUser) => {
-  const orders = await Order.find({ customerId: currentUser._id }).populate('customerId');
+  const orders = await Order.find({ customerId: currentUser._id }).exec();
   return responseUtils.sendJson(response, orders);
 };
 
-const viewOrder = async (response, orderId, currentUser) => {
-    const order = await Order.findById(orderId).exec();
-    if (!order) {
-      return responseUtils.notFound(response);
-    }
-    if (currentUser._id !== order.customerId) {
-      return responseUtils.notFound(response);
-    }
+const viewOrder = async (response, id, currentUser) => {
+  const order = await Order.findOne({_id : id});
+  if (order === null) {
+    return responseUtils.notFound(response);
+  }
 
-    return responseUtils.sendJson(response, order);
+  switch (currentUser.role) {
+    case 'admin': 
+      return responseUtils.sendJson(response, order, 200);
+    case 'customer':
+      if (order.customerId.toString() !== currentUser._id.toString()) {
+        return responseUtils.notFound(response);
+      }
+      return responseUtils.sendJson(response, order, 200);
+  }
 };
 
-const registerOrder = async (response, orderData) => {
-    if (!orderData.customerId || !orderData.items || orderData.items.length === 0 || orderData.items === undefined) {
-      return responseUtils.badRequest(response, "Incomplete order data");
-    }
 
-    const newOrder = new Order({...orderData, customerId: currentUser._id});
-    await newOrder.save();
-    return responseUtils.sendJson(response, newOrder, 201);
+const registerOrder = async (response, currentUser, orderData) => {
+  try {
+    const newOrder = new Order({...orderData, customerId : currentUser._id});
+    const payload = await newOrder.save();
+    return responseUtils.sendJson(response, payload, 201);
+  } catch (error) {
+    return responseUtils.badRequest(response, error);
+  }
 };
-
 module.exports = { getAllOrders, getUserOrders, registerOrder, viewOrder };
