@@ -1,58 +1,30 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-const orderItemSchema = new mongoose.Schema({
-  product: {
-    _id: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
-    },
-    name: {
-      type: String,
-      required: true,
-    },
-    price: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
-    description: {
-      type: String,
-      required: true,
-    },
-  },
-  quantity: {
-    type: Number,
-    required: true,
-    min: 1,
-  },
-});
-
-const orderSchema = new mongoose.Schema({
-  _id: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-  },
+const orderSchema = new Schema({
   customerId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
     required: true,
+    ref: "User",
   },
-  items: [orderItemSchema],
+  items: [
+    {
+      product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+        required: true,
+      },
+      quantity: {
+        type: Number,
+        min: 1,
+        required: true
+      },
+    }
+  ],
 });
 
-orderSchema.set('toJSON', {
-  virtuals: false,
-  versionKey: false,
-  transform: function (doc, ret) {
-    ret.items = ret.items.map(item => ({
-      _id: item._id,
-      product: item.product,
-      quantity: item.quantity,
-    }));
-    return ret;
-  },
-});
+orderSchema.set("toJSON", { virtuals: false, versionKey: false });
 
-const Order = mongoose.model('Order', orderSchema);
+const Order = new mongoose.model("Order", orderSchema);
 module.exports = Order;
 
