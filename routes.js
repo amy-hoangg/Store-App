@@ -195,10 +195,10 @@ const handleRequest = async (request, response) => {
     if (method.toUpperCase() === "PUT") {
       if (currentUser.role === "customer") {
         return responseUtils.forbidden(response);
-    }
+      }
       const body = await parseBodyJson(request);
       try {
-        return await updateProduct(response, productId, currentUser, body);
+        return await updateProduct(response, productId, body);
       } catch (error) {
         return responseUtils.internalServerError(response);
       }
@@ -206,8 +206,11 @@ const handleRequest = async (request, response) => {
 
     // Delete
     if (method.toUpperCase() === "DELETE") {
+      if (currentUser.role === "customer") {
+        return responseUtils.forbidden(response);
+      }
       try {
-        return await deleteProduct(response, productId, currentUser);
+        return await deleteProduct(response, productId);
       } catch (error) {
         return responseUtils.internalServerError(response);
       }
