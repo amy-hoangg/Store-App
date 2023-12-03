@@ -10,52 +10,63 @@ const SCHEMA_DEFAULTS = {
 
 const orderSchema = new Schema({
   _id: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     required: true
   },
   customerId: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     required: true
   },
-  items: [
-    {
-      _id: {
-        type: String,
-        required: true
-      },
-      product: {
+  items: {
+    type: [
+      {
         _id: {
-          type: String,
-          required: true
-        },
-        name: {
-          type: String,
+          type: mongoose.Schema.Types.ObjectId,
           required: true,
-          trim: true,
-          minLength: SCHEMA_DEFAULTS.name.minLength,
-          maxLength: SCHEMA_DEFAULTS.name.maxLength,
         },
-        price: {
+        product: {
+          _id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Product',
+            required: true,
+          },
+          name: {
+            type: String,
+            required: true,
+            trim: true,
+            minLength: SCHEMA_DEFAULTS.name.minLength,
+            maxLength: SCHEMA_DEFAULTS.name.maxLength,
+          },
+          price: {
+            type: Number,
+            required: true,
+            validate: {
+              validator: function (n) {
+                return n > 0;
+              },
+              message: 'Price cannot be 0',
+            },
+          },
+          description: {
+            type: String,
+          },
+        },
+        quantity: {
           type: Number,
           required: true,
-          validate: {
-            validator: function (n) {
-              return n > 0;
-            },
-            message: 'price cannot be 0'
-          }
+          min: 1,
         },
-        description: {
-          type: String
-        }
       },
-      quantity: {
-        type: Number,
-        required: true,
-        min: 1
-      }
-    }
-  ]
+    ],
+    require: true,
+    validate: {
+      validator: function (value) {
+        return value.length > 0; // Validate minimum length of items array
+      },
+      message: 'Order should have at least one item',
+    },
+  },
 });
 
 
