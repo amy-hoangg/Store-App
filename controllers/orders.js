@@ -30,6 +30,10 @@ const viewOrder = async (response, id, currentUser) => {
 
 
 const registerOrder = async (response, currentUser, orderData) => {
+  if (!orderData.customerId || !orderData.items || orderData.items.length === 0 || orderData.items === undefined) {
+    return responseUtils.badRequest(response, "Incomplete order data");
+  }
+
   try {
     const newOrder = new Order({...orderData, customerId : currentUser._id});
     const payload = await newOrder.save();
