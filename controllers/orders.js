@@ -36,8 +36,8 @@ const registerOrder = async (response, currentUser, orderData) => {
 
   try {
     const newOrder = new Order({...orderData, customerId : currentUser._id});
-    const payload = await newOrder.save();
-    return responseUtils.sendJson(response, payload, 201);
+    await newOrder.save();
+    return responseUtils.sendJson(response, newOrder, 201);
   } catch (error) {
     return responseUtils.badRequest(response, error);
   }
