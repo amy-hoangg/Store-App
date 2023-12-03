@@ -30,6 +30,7 @@ const {
   deleteOrder,
   viewOrder,
   updateOrder,
+  getUserOrders,
 } = require("./controllers/orders");
 
 const allowedMethods = {
@@ -308,7 +309,12 @@ const handleRequest = async (request, response) => {
       return responseUtils.basicAuthChallenge(response);
     }
     try {
-      return await getAllOrders(response);
+      if (currentUser.role === 'admin') {
+        return await getAllOrders(response);
+      }
+      if (currentUser.role === 'customer') {
+        return await getUserOrders(response);
+      }
     } 
     catch (error) {
       return responseUtils.internalServerError(response);

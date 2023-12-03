@@ -6,6 +6,11 @@ const getAllOrders = async (response) => {
     return responseUtils.sendJson(response, orders);
 };
 
+const getUserOrders = async (response, currentUser) => {
+  const orders = await Order.find({ customerId: currentUser._id }).populate('customerId');
+  return responseUtils.sendJson(response, orders);
+};
+
 const viewOrder = async (response, orderId, currentUser) => {
     const order = await Order.findById(orderId).exec();
     if (!(currentUser._id.equals(order.customerId))) {
