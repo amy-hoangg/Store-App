@@ -31,7 +31,9 @@ const viewOrder = async (response, id, currentUser) => {
 
 const registerOrder = async (response, currentUser, orderData) => {
   try {
-    if ( orderData.items.length === 0) {
+    if ( orderData.items.length === 0 || orderData.items.some((item) => {
+      return !item.product.name || !item.product.price;
+    })) {
       return responseUtils.badRequest(response, "Incomplete order data");
     }
     const newOrder = new Order({...orderData, customerId : currentUser._id});
