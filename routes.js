@@ -390,9 +390,8 @@ const handleRequest = async (request, response) => {
     }
 
     const body = await parseBodyJson(request);
-    body = body.trim();
     try {
-      return await registerOrder(response, currentUser, body);
+      return await registerOrder(response, currentUser, body.trim());
     } catch (error) {
       responseUtils.badRequest(response);
     }
