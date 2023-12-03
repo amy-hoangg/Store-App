@@ -216,15 +216,16 @@ const getProductCountFromCart = (productId) => {
   //     value of the session storage item)
   const count = sessionStorage.getItem(productId);
   return count ? parseInt(count) : null;
+  
 };
 
 const getAllProductsFromCart = () => {
   const products = [];
 
   // Iterate through session storage and collect products and their counts
-  Array.from(sessionStorage.keys()).forEach((productId) => {
-    const count = sessionStorage.getItem(productId);
-    products.push({ name: productId, amount: parseInt(count) });
+  Object.keys(sessionStorage).forEach((key) => {
+    const count = sessionStorage.getItem(key);
+    products.push({ name: key, amount: parseInt(count) });
   });
 
   return products;

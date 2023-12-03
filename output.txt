@@ -10,8 +10,8 @@
       ✓ should return null when "Authorization" header is empty
       ✓ should return null when "Authorization" type is not "Basic"
       ✓ should return null when user does not exist
-      ✓ should return null when password is incorrect (114ms)
-      ✓ should return user object when credentials are correct (116ms)
+      ✓ should return null when password is incorrect (113ms)
+      ✓ should return user object when credentials are correct (114ms)
 
   Products Controller
     getAllProducts()
@@ -40,9 +40,9 @@
       ✓ should respond with "400 Bad Request" when name is missing
       ✓ should respond with "400 Bad Request" when password is missing
       ✓ should respond with "400 Bad Request" when password is too short
-      ✓ should respond with "201 Created" when registration is successful (114ms)
+      ✓ should respond with "201 Created" when registration is successful (116ms)
       ✓ should set user role to "customer" when registration is successful (114ms)
-      ✓ should return the created user as JSON (124ms)
+      ✓ should return the created user as JSON (114ms)
 
   getDbUrl()
     ✓ must return default database URL if DBURL is not defined
@@ -53,27 +53,27 @@
 
   User Model
     Schema validation
-      ✓ must define "name" (112ms)
+      ✓ must define "name" (113ms)
       ✓ must trim spaces from "name" (111ms)
-      ✓ must not allow "name" to have only spaces (110ms)
-      ✓ must require "name" to be at least one character long (110ms)
+      ✓ must not allow "name" to have only spaces (111ms)
+      ✓ must require "name" to be at least one character long (111ms)
       ✓ must not allow "name" to be longer than 50 characters (111ms)
       ✓ must require "email" (111ms)
       ✓ must require "email" to be valid email address (111ms)
       ✓ must require "password"
       ✓ must not allow empty "password"
-      ✓ must require password to be at least 10 characters long (111ms)
-      ✓ must hash password (114ms)
+      ✓ must require password to be at least 10 characters long (112ms)
+      ✓ must hash password (111ms)
       ✓ must hash "password" when set to a new value (221ms)
       ✓ has an optional "role" (111ms)
       ✓ must set default value of "role" to customer (111ms)
       ✓ must allow any known "role" (222ms)
-      ✓ must trim "role" (111ms)
-      ✓ must cast "role" to lowercase (111ms)
+      ✓ must trim "role" (110ms)
+      ✓ must cast "role" to lowercase (110ms)
       ✓ must not allow unknown "role" (111ms)
     checkPassword()
-      ✓ must detect correct "password" (221ms)
-      ✓ must detect a false "password" (221ms)
+      ✓ must detect correct "password" (222ms)
+      ✓ must detect a false "password" (232ms)
 
   Controllers
     Products
@@ -115,7 +115,7 @@
         ✓ should respond with "400 Bad Request" when email is already in use
         ✓ should respond with "400 Bad Request" when name is missing
         ✓ should respond with "400 Bad Request" when password is missing
-        ✓ should respond with "201 Created" when registration is successful (116ms)
+        ✓ should respond with "201 Created" when registration is successful (120ms)
         ✓ should set user role to "customer" when registration is successful (115ms)
       Viewing all users: GET /api/users
         ✓ should respond with "406 Not Acceptable" when Accept header is missing
@@ -125,26 +125,26 @@
         ✓ should respond with Basic Auth Challenge when Authorization header is empty
         ✓ should respond with Basic Auth Challenge when Authorization header is not properly encoded
         ✓ should respond with Basic Auth Challenge when Authorization credentials are incorrect (113ms)
-        ✓ should respond with "403 Forbidden" when customer credentials are received (113ms)
+        ✓ should respond with "403 Forbidden" when customer credentials are received (112ms)
         ✓ should respond with JSON when admin credentials are received (114ms)
       Viewing a single user: GET /api/users/{id}
         ✓ should respond with "401 Unauthorized" when Authorization header is missing
         ✓ should respond with Basic Auth Challenge when Authorization header is missing
-        ✓ should respond with Basic Auth Challenge when Authorization credentials are incorrect (117ms)
-        ✓ should respond with "403 Forbidden" when customer credentials are received (114ms)
+        ✓ should respond with Basic Auth Challenge when Authorization credentials are incorrect (113ms)
+        ✓ should respond with "403 Forbidden" when customer credentials are received (116ms)
         ✓ should respond with "406 Not Acceptable" when Accept header is missing (113ms)
-        ✓ should respond with "406 Not Acceptable" when client does not accept JSON (113ms)
-        ✓ should respond with JSON when admin credentials are received (114ms)
+        ✓ should respond with "406 Not Acceptable" when client does not accept JSON (116ms)
+        ✓ should respond with JSON when admin credentials are received (115ms)
         ✓ should respond with status code 404 when user does not exist (113ms)
       Updating users: PUT /api/users/{id}
         ✓ should respond with "401 Unauthorized" when Authorization header is missing
         ✓ should respond with Basic Auth Challenge when Authorization header is missing
-        ✓ should respond with Basic Auth Challenge when Authorization credentials are incorrect (112ms)
-        ✓ should respond with "403 Forbidden" when customer credentials are received (112ms)
-        ✓ should respond with "406 Not Acceptable" when Accept header is missing (113ms)
-        ✓ should respond with "406 Not Acceptable" when client does not accept JSON (114ms)
-        ✓ should update role when admin credentials are received (117ms)
-        ✓ should only update role (116ms)
+        ✓ should respond with Basic Auth Challenge when Authorization credentials are incorrect (113ms)
+        ✓ should respond with "403 Forbidden" when customer credentials are received (113ms)
+        ✓ should respond with "406 Not Acceptable" when Accept header is missing (128ms)
+        ✓ should respond with "406 Not Acceptable" when client does not accept JSON (119ms)
+        ✓ should update role when admin credentials are received (123ms)
+        ✓ should only update role (124ms)
         ✓ should respond with "400 Bad Request" when role is missing (114ms)
         ✓ should respond with "400 Bad Request" when role is not valid (115ms)
         ✓ should respond with status code 404 when user does not exist (114ms)
@@ -152,111 +152,111 @@
         ✓ should respond with "401 Unauthorized" when Authorization header is missing
         ✓ should respond with Basic Auth Challenge when Authorization header is missing
         ✓ should respond with Basic Auth Challenge when Authorization credentials are incorrect (113ms)
-        ✓ should respond with "403 Forbidden" when customer credentials are received (114ms)
+        ✓ should respond with "403 Forbidden" when customer credentials are received (115ms)
         ✓ should respond with "406 Not Acceptable" when Accept header is missing (114ms)
-        ✓ should respond with "406 Not Acceptable" when client does not accept JSON (114ms)
-        ✓ should delete user when admin credentials are received (116ms)
-        ✓ should return the deleted user (115ms)
-        ✓ should respond with status code 404 when user does not exist (113ms)
+        ✓ should respond with "406 Not Acceptable" when client does not accept JSON (117ms)
+        ✓ should delete user when admin credentials are received (122ms)
+        ✓ should return the deleted user (120ms)
+        ✓ should respond with status code 404 when user does not exist (132ms)
       Viewing all products: GET /api/products
-        2) should respond with "401 Unauthorized" when Authorization header is missing
-        3) should respond with Basic Auth Challenge when Authorization header is missing
-        4) should respond with Basic Auth Challenge when Authorization credentials are incorrect
-        5) should respond with Basic Auth Challenge when Authorization header is empty
-        6) should respond with Basic Auth Challenge when Authorization header is not properly encoded
-        7) should respond with "406 Not Acceptable" when Accept header is missing
-        8) should respond with "406 Not Acceptable" when client does not accept JSON
-        9) should respond with JSON when admin credentials are received
-        10) should respond with JSON when customer credentials are received
-        11) should respond with correct data when admin credentials are received
-        12) should respond with correct data when customer credentials are received
-      Viewing a single product: GET /api/products/{id}
-        13) should respond with "401 Unauthorized" when Authorization header is missing
-        14) should respond with Basic Auth Challenge when Authorization header is missing
-        15) should respond with Basic Auth Challenge when Authorization credentials are incorrect
-        16) should respond with "406 Not Acceptable" when Accept header is missing
-        17) should respond with "406 Not Acceptable" when client does not accept JSON
-        18) should respond with JSON when admin credentials are received
-        19) should respond with JSON when customer credentials are received
-        ✓ should respond with status code 404 when product does not exist
-      Updating products: PUT /api/products/{id}
-        20) should respond with "401 Unauthorized" when Authorization header is missing
-        21) should respond with Basic Auth Challenge when Authorization header is missing
-        22) should respond with Basic Auth Challenge when Authorization credentials are incorrect
-        23) should respond with "403 Forbidden" when customer credentials are received
-        24) should respond with "406 Not Acceptable" when Accept header is missing
-        25) should respond with "406 Not Acceptable" when client does not accept JSON
-        26) should update product when admin credentials are received
-        27) should allow partial update of product properties
-        28) should respond with "400 Bad Request" when name is empty
-        29) should respond with "400 Bad Request" when price is not a number
-        30) should respond with "400 Bad Request" when price is 0 (zero)
-        31) should respond with "400 Bad Request" when price is negative
-        ✓ should respond with status code 404 when product does not exist
-      Deleting products: DELETE /api/products/{id}
-        32) should respond with "401 Unauthorized" when Authorization header is missing
-        33) should respond with Basic Auth Challenge when Authorization header is missing
-        34) should respond with Basic Auth Challenge when Authorization credentials are incorrect
-        35) should respond with "403 Forbidden" when customer credentials are received
-        36) should respond with "406 Not Acceptable" when Accept header is missing
-        37) should respond with "406 Not Acceptable" when client does not accept JSON
-        38) should delete product when admin credentials are received
-        39) should return the deleted user
-        ✓ should respond with status code 404 when user does not exist
-      Create a new product: POST /api/products
-        40) should respond with "406 Not Acceptable" when Accept header is missing
-        41) should respond with "406 Not Acceptable" when client does not accept JSON
-        42) should respond with "401 Unauthorized" when Authorization header is missing
-        43) should respond with Basic Auth Challenge when Authorization header is missing
-        44) should respond with Basic Auth Challenge when Authorization credentials are incorrect
-        45) should respond with "403 Forbidden" when customer credentials are received
-        46) should respond with "400 Bad Request" when request body is not valid JSON
-        47) should respond with "400 Bad Request" when name is missing
-        48) should respond with "400 Bad Request" when price is missing
-        49) should respond with "201 Created" when product creation is successful
-      Viewing all orders: GET /api/orders
         ✓ should respond with "401 Unauthorized" when Authorization header is missing
         ✓ should respond with Basic Auth Challenge when Authorization header is missing
-        ✓ should respond with Basic Auth Challenge when Authorization credentials are incorrect (114ms)
+        ✓ should respond with Basic Auth Challenge when Authorization credentials are incorrect (113ms)
         ✓ should respond with Basic Auth Challenge when Authorization header is empty
         ✓ should respond with Basic Auth Challenge when Authorization header is not properly encoded
         ✓ should respond with "406 Not Acceptable" when Accept header is missing
         ✓ should respond with "406 Not Acceptable" when client does not accept JSON
-        50) should respond with JSON when admin credentials are received
-        51) should respond with JSON when customer credentials are received
-        52) should respond with correct data when admin credentials are received
-        53) should respond with correct data when customer credentials are received
+        ✓ should respond with JSON when admin credentials are received (116ms)
+        ✓ should respond with JSON when customer credentials are received (149ms)
+        ✓ should respond with correct data when admin credentials are received (117ms)
+        ✓ should respond with correct data when customer credentials are received (120ms)
+      Viewing a single product: GET /api/products/{id}
+        ✓ should respond with "401 Unauthorized" when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization credentials are incorrect (124ms)
+        ✓ should respond with "406 Not Acceptable" when Accept header is missing (114ms)
+        ✓ should respond with "406 Not Acceptable" when client does not accept JSON (113ms)
+        ✓ should respond with JSON when admin credentials are received (117ms)
+        ✓ should respond with JSON when customer credentials are received (116ms)
+        ✓ should respond with status code 404 when product does not exist (123ms)
+      Updating products: PUT /api/products/{id}
+        ✓ should respond with "401 Unauthorized" when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization credentials are incorrect (114ms)
+        ✓ should respond with "403 Forbidden" when customer credentials are received (114ms)
+        ✓ should respond with "406 Not Acceptable" when Accept header is missing (182ms)
+        ✓ should respond with "406 Not Acceptable" when client does not accept JSON (113ms)
+        ✓ should update product when admin credentials are received (126ms)
+        ✓ should allow partial update of product properties (116ms)
+        ✓ should respond with "400 Bad Request" when name is empty (115ms)
+        ✓ should respond with "400 Bad Request" when price is not a number (129ms)
+        ✓ should respond with "400 Bad Request" when price is 0 (zero) (114ms)
+        ✓ should respond with "400 Bad Request" when price is negative (115ms)
+        ✓ should respond with status code 404 when product does not exist (116ms)
+      Deleting products: DELETE /api/products/{id}
+        ✓ should respond with "401 Unauthorized" when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization credentials are incorrect (114ms)
+        ✓ should respond with "403 Forbidden" when customer credentials are received (114ms)
+        ✓ should respond with "406 Not Acceptable" when Accept header is missing (115ms)
+        ✓ should respond with "406 Not Acceptable" when client does not accept JSON (113ms)
+        ✓ should delete product when admin credentials are received (116ms)
+        ✓ should return the deleted user (120ms)
+        ✓ should respond with status code 404 when user does not exist (115ms)
+      Create a new product: POST /api/products
+        ✓ should respond with "406 Not Acceptable" when Accept header is missing
+        ✓ should respond with "406 Not Acceptable" when client does not accept JSON
+        ✓ should respond with "401 Unauthorized" when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization credentials are incorrect (114ms)
+        ✓ should respond with "403 Forbidden" when customer credentials are received (113ms)
+        ✓ should respond with "400 Bad Request" when request body is not valid JSON (114ms)
+        ✓ should respond with "400 Bad Request" when name is missing (113ms)
+        ✓ should respond with "400 Bad Request" when price is missing (113ms)
+        ✓ should respond with "201 Created" when product creation is successful (115ms)
+      Viewing all orders: GET /api/orders
+        ✓ should respond with "401 Unauthorized" when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization credentials are incorrect (125ms)
+        ✓ should respond with Basic Auth Challenge when Authorization header is empty
+        ✓ should respond with Basic Auth Challenge when Authorization header is not properly encoded
+        ✓ should respond with "406 Not Acceptable" when Accept header is missing
+        ✓ should respond with "406 Not Acceptable" when client does not accept JSON
+        ✓ should respond with JSON when admin credentials are received (113ms)
+        ✓ should respond with JSON when customer credentials are received (134ms)
+        ✓ should respond with correct data when admin credentials are received (117ms)
+        ✓ should respond with correct data when customer credentials are received (114ms)
       Viewing a single order: GET /api/orders/{id}
-        54) should respond with "401 Unauthorized" when Authorization header is missing
-        55) should respond with Basic Auth Challenge when Authorization header is missing
-        56) should respond with Basic Auth Challenge when Authorization credentials are incorrect
-        57) should respond with "406 Not Acceptable" when Accept header is missing
-        58) should respond with "406 Not Acceptable" when client does not accept JSON
-        59) should respond with JSON when admin credentials are received
-        60) should respond with JSON when customer credentials are received
-        ✓ should respond with status code 404 when order does not exist
-        ✓ should respond with status code 404 when order exists but the owner is not the current customer
+        ✓ should respond with "401 Unauthorized" when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization credentials are incorrect (112ms)
+        ✓ should respond with "406 Not Acceptable" when Accept header is missing (113ms)
+        ✓ should respond with "406 Not Acceptable" when client does not accept JSON (114ms)
+        ✓ should respond with JSON when admin credentials are received (115ms)
+        ✓ should respond with JSON when customer credentials are received (115ms)
+        ✓ should respond with status code 404 when order does not exist (114ms)
+        ✓ should respond with status code 404 when order exists but the owner is not the current customer (114ms)
       Create a new order: POST /api/orders
-        61) should respond with "406 Not Acceptable" when Accept header is missing
-        62) should respond with "406 Not Acceptable" when client does not accept JSON
-        63) should respond with "401 Unauthorized" when Authorization header is missing
-        64) should respond with Basic Auth Challenge when Authorization header is missing
-        65) should respond with Basic Auth Challenge when Authorization credentials are incorrect
-        66) should respond with "403 Forbidden" when admin credentials are received
-        ✓ should respond with "400 Bad Request" when request body is not valid JSON
-        ✓ should respond with "400 Bad Request" when items is empty
-        ✓ should respond with "400 Bad Request" when quantity is missing
-        ✓ should respond with "400 Bad Request" when product is missing
-        ✓ should respond with "400 Bad Request" when product _id is missing
-        ✓ should respond with "400 Bad Request" when product name is missing
-        ✓ should respond with "400 Bad Request" when price is missing
-        67) should respond with "201 Created" when order creation is successful
+        ✓ should respond with "406 Not Acceptable" when Accept header is missing
+        ✓ should respond with "406 Not Acceptable" when client does not accept JSON
+        ✓ should respond with "401 Unauthorized" when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization header is missing
+        ✓ should respond with Basic Auth Challenge when Authorization credentials are incorrect (113ms)
+        ✓ should respond with "403 Forbidden" when admin credentials are received (112ms)
+        ✓ should respond with "400 Bad Request" when request body is not valid JSON (112ms)
+        ✓ should respond with "400 Bad Request" when items is empty (113ms)
+        ✓ should respond with "400 Bad Request" when quantity is missing (114ms)
+        ✓ should respond with "400 Bad Request" when product is missing (156ms)
+        ✓ should respond with "400 Bad Request" when product _id is missing (115ms)
+        ✓ should respond with "400 Bad Request" when product name is missing (112ms)
+        ✓ should respond with "400 Bad Request" when price is missing (113ms)
+        ✓ should respond with "201 Created" when order creation is successful (116ms)
 
   User Inteface
-    68) "before all" hook in "User Inteface"
+    2) "before all" hook in "User Inteface"
 
   Request Utils
-    69) "before all" hook in "User Inteface"
+    3) "before all" hook in "User Inteface"
     acceptsJson()
       ✓ should return false when "Accept" header is missing
       ✓ should return false when "Accept" header does not include "application/json" or "*/*"
@@ -304,8 +304,8 @@
       ✓ should set response status to 500
 
 
-  158 passing (3m)
-  69 failing
+  224 passing (3m)
+  3 failing
 
   1) .env
        must define DBURL:
@@ -313,855 +313,7 @@
       at Context.<anonymous> (test/models/env.test.js:8:33)
       at processImmediate (node:internal/timers:466:21)
 
-  2) Routes
-       handleRequest()
-         Viewing all products: GET /api/products
-           should respond with "401 Unauthorized" when Authorization header is missing:
-     Uncaught ReferenceError: methodtoUpperCase is not defined
-      at Server.handleRequest (routes.js:246:16)
-      at Server.emit (node:events:513:28)
-      at parserOnIncoming (node:_http_server:998:12)
-      at HTTPParser.parserOnHeadersComplete (node:_http_common:128:17)
-
-  3) Routes
-       handleRequest()
-         Viewing all products: GET /api/products
-           should respond with Basic Auth Challenge when Authorization header is missing:
-     Uncaught ReferenceError: methodtoUpperCase is not defined
-      at Server.handleRequest (routes.js:246:16)
-      at Server.emit (node:events:513:28)
-      at parserOnIncoming (node:_http_server:998:12)
-      at HTTPParser.parserOnHeadersComplete (node:_http_common:128:17)
-
-  4) Routes
-       handleRequest()
-         Viewing all products: GET /api/products
-           should respond with Basic Auth Challenge when Authorization credentials are incorrect:
-     Uncaught ReferenceError: methodtoUpperCase is not defined
-      at Server.handleRequest (routes.js:246:16)
-      at Server.emit (node:events:513:28)
-      at parserOnIncoming (node:_http_server:998:12)
-      at HTTPParser.parserOnHeadersComplete (node:_http_common:128:17)
-
-  5) Routes
-       handleRequest()
-         Viewing all products: GET /api/products
-           should respond with Basic Auth Challenge when Authorization header is empty:
-     Uncaught ReferenceError: methodtoUpperCase is not defined
-      at Server.handleRequest (routes.js:246:16)
-      at Server.emit (node:events:513:28)
-      at parserOnIncoming (node:_http_server:998:12)
-      at HTTPParser.parserOnHeadersComplete (node:_http_common:128:17)
-
-  6) Routes
-       handleRequest()
-         Viewing all products: GET /api/products
-           should respond with Basic Auth Challenge when Authorization header is not properly encoded:
-     Uncaught ReferenceError: methodtoUpperCase is not defined
-      at Server.handleRequest (routes.js:246:16)
-      at Server.emit (node:events:513:28)
-      at parserOnIncoming (node:_http_server:998:12)
-      at HTTPParser.parserOnHeadersComplete (node:_http_common:128:17)
-
-  7) Routes
-       handleRequest()
-         Viewing all products: GET /api/products
-           should respond with "406 Not Acceptable" when Accept header is missing:
-     Uncaught ReferenceError: methodtoUpperCase is not defined
-      at Server.handleRequest (routes.js:246:16)
-      at Server.emit (node:events:513:28)
-      at parserOnIncoming (node:_http_server:998:12)
-      at HTTPParser.parserOnHeadersComplete (node:_http_common:128:17)
-
-  8) Routes
-       handleRequest()
-         Viewing all products: GET /api/products
-           should respond with "406 Not Acceptable" when client does not accept JSON:
-     Uncaught ReferenceError: methodtoUpperCase is not defined
-      at Server.handleRequest (routes.js:246:16)
-      at Server.emit (node:events:513:28)
-      at parserOnIncoming (node:_http_server:998:12)
-      at HTTPParser.parserOnHeadersComplete (node:_http_common:128:17)
-
-  9) Routes
-       handleRequest()
-         Viewing all products: GET /api/products
-           should respond with JSON when admin credentials are received:
-     Uncaught ReferenceError: methodtoUpperCase is not defined
-      at Server.handleRequest (routes.js:246:16)
-      at Server.emit (node:events:513:28)
-      at parserOnIncoming (node:_http_server:998:12)
-      at HTTPParser.parserOnHeadersComplete (node:_http_common:128:17)
-
-  10) Routes
-       handleRequest()
-         Viewing all products: GET /api/products
-           should respond with JSON when customer credentials are received:
-     Uncaught ReferenceError: methodtoUpperCase is not defined
-      at Server.handleRequest (routes.js:246:16)
-      at Server.emit (node:events:513:28)
-      at parserOnIncoming (node:_http_server:998:12)
-      at HTTPParser.parserOnHeadersComplete (node:_http_common:128:17)
-
-  11) Routes
-       handleRequest()
-         Viewing all products: GET /api/products
-           should respond with correct data when admin credentials are received:
-     Uncaught ReferenceError: methodtoUpperCase is not defined
-      at Server.handleRequest (routes.js:246:16)
-      at Server.emit (node:events:513:28)
-      at parserOnIncoming (node:_http_server:998:12)
-      at HTTPParser.parserOnHeadersComplete (node:_http_common:128:17)
-
-  12) Routes
-       handleRequest()
-         Viewing all products: GET /api/products
-           should respond with correct data when customer credentials are received:
-     Uncaught ReferenceError: methodtoUpperCase is not defined
-      at Server.handleRequest (routes.js:246:16)
-      at Server.emit (node:events:513:28)
-      at parserOnIncoming (node:_http_server:998:12)
-      at HTTPParser.parserOnHeadersComplete (node:_http_common:128:17)
-
-  13) Routes
-       handleRequest()
-         Viewing a single product: GET /api/products/{id}
-           should respond with "401 Unauthorized" when Authorization header is missing:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 401 but got 404
-      + expected - actual
-
-      -404
-      +401
-      
-      at Context.<anonymous> (test/routes.test.js:897:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  14) Routes
-       handleRequest()
-         Viewing a single product: GET /api/products/{id}
-           should respond with Basic Auth Challenge when Authorization header is missing:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 401 but got 404
-      + expected - actual
-
-      -404
-      +401
-      
-      at Context.<anonymous> (test/routes.test.js:906:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  15) Routes
-       handleRequest()
-         Viewing a single product: GET /api/products/{id}
-           should respond with Basic Auth Challenge when Authorization credentials are incorrect:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 401 but got 404
-      + expected - actual
-
-      -404
-      +401
-      
-      at Context.<anonymous> (test/routes.test.js:917:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  16) Routes
-       handleRequest()
-         Viewing a single product: GET /api/products/{id}
-           should respond with "406 Not Acceptable" when Accept header is missing:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 406 but got 404
-      + expected - actual
-
-      -404
-      +406
-      
-      at Context.<anonymous> (test/routes.test.js:926:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  17) Routes
-       handleRequest()
-         Viewing a single product: GET /api/products/{id}
-           should respond with "406 Not Acceptable" when client does not accept JSON:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 406 but got 404
-      + expected - actual
-
-      -404
-      +406
-      
-      at Context.<anonymous> (test/routes.test.js:935:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  18) Routes
-       handleRequest()
-         Viewing a single product: GET /api/products/{id}
-           should respond with JSON when admin credentials are received:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 200 but got 404
-      + expected - actual
-
-      -404
-      +200
-      
-      at Context.<anonymous> (test/routes.test.js:945:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  19) Routes
-       handleRequest()
-         Viewing a single product: GET /api/products/{id}
-           should respond with JSON when customer credentials are received:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 200 but got 404
-      + expected - actual
-
-      -404
-      +200
-      
-      at Context.<anonymous> (test/routes.test.js:958:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  20) Routes
-       handleRequest()
-         Updating products: PUT /api/products/{id}
-           should respond with "401 Unauthorized" when Authorization header is missing:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 401 but got 404
-      + expected - actual
-
-      -404
-      +401
-      
-      at Context.<anonymous> (test/routes.test.js:1002:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  21) Routes
-       handleRequest()
-         Updating products: PUT /api/products/{id}
-           should respond with Basic Auth Challenge when Authorization header is missing:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 401 but got 404
-      + expected - actual
-
-      -404
-      +401
-      
-      at Context.<anonymous> (test/routes.test.js:1008:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  22) Routes
-       handleRequest()
-         Updating products: PUT /api/products/{id}
-           should respond with Basic Auth Challenge when Authorization credentials are incorrect:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 401 but got 404
-      + expected - actual
-
-      -404
-      +401
-      
-      at Context.<anonymous> (test/routes.test.js:1019:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  23) Routes
-       handleRequest()
-         Updating products: PUT /api/products/{id}
-           should respond with "403 Forbidden" when customer credentials are received:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 403 but got 404
-      + expected - actual
-
-      -404
-      +403
-      
-      at Context.<anonymous> (test/routes.test.js:1031:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  24) Routes
-       handleRequest()
-         Updating products: PUT /api/products/{id}
-           should respond with "406 Not Acceptable" when Accept header is missing:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 406 but got 404
-      + expected - actual
-
-      -404
-      +406
-      
-      at Context.<anonymous> (test/routes.test.js:1040:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  25) Routes
-       handleRequest()
-         Updating products: PUT /api/products/{id}
-           should respond with "406 Not Acceptable" when client does not accept JSON:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 406 but got 404
-      + expected - actual
-
-      -404
-      +406
-      
-      at Context.<anonymous> (test/routes.test.js:1050:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  26) Routes
-       handleRequest()
-         Updating products: PUT /api/products/{id}
-           should update product when admin credentials are received:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 200 but got 404
-      + expected - actual
-
-      -404
-      +200
-      
-      at Context.<anonymous> (test/routes.test.js:1061:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  27) Routes
-       handleRequest()
-         Updating products: PUT /api/products/{id}
-           should allow partial update of product properties:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 200 but got 404
-      + expected - actual
-
-      -404
-      +200
-      
-      at Context.<anonymous> (test/routes.test.js:1084:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  28) Routes
-       handleRequest()
-         Updating products: PUT /api/products/{id}
-           should respond with "400 Bad Request" when name is empty:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 400 but got 404
-      + expected - actual
-
-      -404
-      +400
-      
-      at Context.<anonymous> (test/routes.test.js:1103:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  29) Routes
-       handleRequest()
-         Updating products: PUT /api/products/{id}
-           should respond with "400 Bad Request" when price is not a number:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 400 but got 404
-      + expected - actual
-
-      -404
-      +400
-      
-      at Context.<anonymous> (test/routes.test.js:1117:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  30) Routes
-       handleRequest()
-         Updating products: PUT /api/products/{id}
-           should respond with "400 Bad Request" when price is 0 (zero):
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 400 but got 404
-      + expected - actual
-
-      -404
-      +400
-      
-      at Context.<anonymous> (test/routes.test.js:1131:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  31) Routes
-       handleRequest()
-         Updating products: PUT /api/products/{id}
-           should respond with "400 Bad Request" when price is negative:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 400 but got 404
-      + expected - actual
-
-      -404
-      +400
-      
-      at Context.<anonymous> (test/routes.test.js:1145:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  32) Routes
-       handleRequest()
-         Deleting products: DELETE /api/products/{id}
-           should respond with "401 Unauthorized" when Authorization header is missing:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 401 but got 404
-      + expected - actual
-
-      -404
-      +401
-      
-      at Context.<anonymous> (test/routes.test.js:1183:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  33) Routes
-       handleRequest()
-         Deleting products: DELETE /api/products/{id}
-           should respond with Basic Auth Challenge when Authorization header is missing:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 401 but got 404
-      + expected - actual
-
-      -404
-      +401
-      
-      at Context.<anonymous> (test/routes.test.js:1192:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  34) Routes
-       handleRequest()
-         Deleting products: DELETE /api/products/{id}
-           should respond with Basic Auth Challenge when Authorization credentials are incorrect:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 401 but got 404
-      + expected - actual
-
-      -404
-      +401
-      
-      at Context.<anonymous> (test/routes.test.js:1203:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  35) Routes
-       handleRequest()
-         Deleting products: DELETE /api/products/{id}
-           should respond with "403 Forbidden" when customer credentials are received:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 403 but got 404
-      + expected - actual
-
-      -404
-      +403
-      
-      at Context.<anonymous> (test/routes.test.js:1214:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  36) Routes
-       handleRequest()
-         Deleting products: DELETE /api/products/{id}
-           should respond with "406 Not Acceptable" when Accept header is missing:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 406 but got 404
-      + expected - actual
-
-      -404
-      +406
-      
-      at Context.<anonymous> (test/routes.test.js:1222:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  37) Routes
-       handleRequest()
-         Deleting products: DELETE /api/products/{id}
-           should respond with "406 Not Acceptable" when client does not accept JSON:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 406 but got 404
-      + expected - actual
-
-      -404
-      +406
-      
-      at Context.<anonymous> (test/routes.test.js:1231:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  38) Routes
-       handleRequest()
-         Deleting products: DELETE /api/products/{id}
-           should delete product when admin credentials are received:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 200 but got 404
-      + expected - actual
-
-      -404
-      +200
-      
-      at Context.<anonymous> (test/routes.test.js:1242:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  39) Routes
-       handleRequest()
-         Deleting products: DELETE /api/products/{id}
-           should return the deleted user:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 200 but got 404
-      + expected - actual
-
-      -404
-      +200
-      
-      at Context.<anonymous> (test/routes.test.js:1254:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  40) Routes
-       handleRequest()
-         Create a new product: POST /api/products
-           should respond with "406 Not Acceptable" when Accept header is missing:
-     Uncaught ReferenceError: methodtoUpperCase is not defined
-      at Server.handleRequest (routes.js:246:16)
-      at Server.emit (node:events:513:28)
-      at parserOnIncoming (node:_http_server:998:12)
-      at HTTPParser.parserOnHeadersComplete (node:_http_common:128:17)
-
-  41) Routes
-       handleRequest()
-         Create a new product: POST /api/products
-           should respond with "406 Not Acceptable" when client does not accept JSON:
-     Uncaught ReferenceError: methodtoUpperCase is not defined
-      at Server.handleRequest (routes.js:246:16)
-      at Server.emit (node:events:513:28)
-      at parserOnIncoming (node:_http_server:998:12)
-      at HTTPParser.parserOnHeadersComplete (node:_http_common:128:17)
-
-  42) Routes
-       handleRequest()
-         Create a new product: POST /api/products
-           should respond with "401 Unauthorized" when Authorization header is missing:
-     Uncaught ReferenceError: methodtoUpperCase is not defined
-      at Server.handleRequest (routes.js:246:16)
-      at Server.emit (node:events:513:28)
-      at parserOnIncoming (node:_http_server:998:12)
-      at HTTPParser.parserOnHeadersComplete (node:_http_common:128:17)
-
-  43) Routes
-       handleRequest()
-         Create a new product: POST /api/products
-           should respond with Basic Auth Challenge when Authorization header is missing:
-     Uncaught ReferenceError: methodtoUpperCase is not defined
-      at Server.handleRequest (routes.js:246:16)
-      at Server.emit (node:events:513:28)
-      at parserOnIncoming (node:_http_server:998:12)
-      at HTTPParser.parserOnHeadersComplete (node:_http_common:128:17)
-
-  44) Routes
-       handleRequest()
-         Create a new product: POST /api/products
-           should respond with Basic Auth Challenge when Authorization credentials are incorrect:
-     Uncaught ReferenceError: methodtoUpperCase is not defined
-      at Server.handleRequest (routes.js:246:16)
-      at Server.emit (node:events:513:28)
-      at parserOnIncoming (node:_http_server:998:12)
-      at HTTPParser.parserOnHeadersComplete (node:_http_common:128:17)
-
-  45) Routes
-       handleRequest()
-         Create a new product: POST /api/products
-           should respond with "403 Forbidden" when customer credentials are received:
-     Uncaught ReferenceError: methodtoUpperCase is not defined
-      at Server.handleRequest (routes.js:246:16)
-      at Server.emit (node:events:513:28)
-      at parserOnIncoming (node:_http_server:998:12)
-      at HTTPParser.parserOnHeadersComplete (node:_http_common:128:17)
-
-  46) Routes
-       handleRequest()
-         Create a new product: POST /api/products
-           should respond with "400 Bad Request" when request body is not valid JSON:
-     Uncaught ReferenceError: methodtoUpperCase is not defined
-      at Server.handleRequest (routes.js:246:16)
-      at Server.emit (node:events:513:28)
-      at parserOnIncoming (node:_http_server:998:12)
-      at HTTPParser.parserOnHeadersComplete (node:_http_common:128:17)
-
-  47) Routes
-       handleRequest()
-         Create a new product: POST /api/products
-           should respond with "400 Bad Request" when name is missing:
-     Uncaught ReferenceError: methodtoUpperCase is not defined
-      at Server.handleRequest (routes.js:246:16)
-      at Server.emit (node:events:513:28)
-      at parserOnIncoming (node:_http_server:998:12)
-      at HTTPParser.parserOnHeadersComplete (node:_http_common:128:17)
-
-  48) Routes
-       handleRequest()
-         Create a new product: POST /api/products
-           should respond with "400 Bad Request" when price is missing:
-     Uncaught ReferenceError: methodtoUpperCase is not defined
-      at Server.handleRequest (routes.js:246:16)
-      at Server.emit (node:events:513:28)
-      at parserOnIncoming (node:_http_server:998:12)
-      at HTTPParser.parserOnHeadersComplete (node:_http_common:128:17)
-
-  49) Routes
-       handleRequest()
-         Create a new product: POST /api/products
-           should respond with "201 Created" when product creation is successful:
-     Uncaught ReferenceError: methodtoUpperCase is not defined
-      at Server.handleRequest (routes.js:246:16)
-      at Server.emit (node:events:513:28)
-      at parserOnIncoming (node:_http_server:998:12)
-      at HTTPParser.parserOnHeadersComplete (node:_http_common:128:17)
-
-  50) Routes
-       handleRequest()
-         Viewing all orders: GET /api/orders
-           should respond with JSON when admin credentials are received:
-     Uncaught ReferenceError: currentOrder is not defined
-      at Server.handleRequest (routes.js:276:5)
-
-  51) Routes
-       handleRequest()
-         Viewing all orders: GET /api/orders
-           should respond with JSON when customer credentials are received:
-     Uncaught ReferenceError: currentOrder is not defined
-      at Server.handleRequest (routes.js:276:5)
-
-  52) Routes
-       handleRequest()
-         Viewing all orders: GET /api/orders
-           should respond with correct data when admin credentials are received:
-     Uncaught ReferenceError: currentOrder is not defined
-      at Server.handleRequest (routes.js:276:5)
-
-  53) Routes
-       handleRequest()
-         Viewing all orders: GET /api/orders
-           should respond with correct data when customer credentials are received:
-     Uncaught ReferenceError: currentOrder is not defined
-      at Server.handleRequest (routes.js:276:5)
-
-  54) Routes
-       handleRequest()
-         Viewing a single order: GET /api/orders/{id}
-           should respond with "401 Unauthorized" when Authorization header is missing:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 401 but got 404
-      + expected - actual
-
-      -404
-      +401
-      
-      at Context.<anonymous> (test/routes.test.js:1566:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  55) Routes
-       handleRequest()
-         Viewing a single order: GET /api/orders/{id}
-           should respond with Basic Auth Challenge when Authorization header is missing:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 401 but got 404
-      + expected - actual
-
-      -404
-      +401
-      
-      at Context.<anonymous> (test/routes.test.js:1575:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  56) Routes
-       handleRequest()
-         Viewing a single order: GET /api/orders/{id}
-           should respond with Basic Auth Challenge when Authorization credentials are incorrect:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 401 but got 404
-      + expected - actual
-
-      -404
-      +401
-      
-      at Context.<anonymous> (test/routes.test.js:1586:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  57) Routes
-       handleRequest()
-         Viewing a single order: GET /api/orders/{id}
-           should respond with "406 Not Acceptable" when Accept header is missing:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 406 but got 404
-      + expected - actual
-
-      -404
-      +406
-      
-      at Context.<anonymous> (test/routes.test.js:1595:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  58) Routes
-       handleRequest()
-         Viewing a single order: GET /api/orders/{id}
-           should respond with "406 Not Acceptable" when client does not accept JSON:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 406 but got 404
-      + expected - actual
-
-      -404
-      +406
-      
-      at Context.<anonymous> (test/routes.test.js:1604:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  59) Routes
-       handleRequest()
-         Viewing a single order: GET /api/orders/{id}
-           should respond with JSON when admin credentials are received:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 200 but got 404
-      + expected - actual
-
-      -404
-      +200
-      
-      at Context.<anonymous> (test/routes.test.js:1615:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  60) Routes
-       handleRequest()
-         Viewing a single order: GET /api/orders/{id}
-           should respond with JSON when customer credentials are received:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 200 but got 404
-      + expected - actual
-
-      -404
-      +200
-      
-      at Context.<anonymous> (test/routes.test.js:1629:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  61) Routes
-       handleRequest()
-         Create a new order: POST /api/orders
-           should respond with "406 Not Acceptable" when Accept header is missing:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 406 but got 400
-      + expected - actual
-
-      -400
-      +406
-      
-      at Context.<anonymous> (test/routes.test.js:1667:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  62) Routes
-       handleRequest()
-         Create a new order: POST /api/orders
-           should respond with "406 Not Acceptable" when client does not accept JSON:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 406 but got 400
-      + expected - actual
-
-      -400
-      +406
-      
-      at Context.<anonymous> (test/routes.test.js:1678:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  63) Routes
-       handleRequest()
-         Create a new order: POST /api/orders
-           should respond with "401 Unauthorized" when Authorization header is missing:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 401 but got 400
-      + expected - actual
-
-      -400
-      +401
-      
-      at Context.<anonymous> (test/routes.test.js:1689:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  64) Routes
-       handleRequest()
-         Create a new order: POST /api/orders
-           should respond with Basic Auth Challenge when Authorization header is missing:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 401 but got 400
-      + expected - actual
-
-      -400
-      +401
-      
-      at Context.<anonymous> (test/routes.test.js:1700:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  65) Routes
-       handleRequest()
-         Create a new order: POST /api/orders
-           should respond with Basic Auth Challenge when Authorization credentials are incorrect:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 401 but got 400
-      + expected - actual
-
-      -400
-      +401
-      
-      at Context.<anonymous> (test/routes.test.js:1713:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  66) Routes
-       handleRequest()
-         Create a new order: POST /api/orders
-           should respond with "403 Forbidden" when admin credentials are received:
-
-      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 403 but got 400
-      + expected - actual
-
-      -400
-      +403
-      
-      at Context.<anonymous> (test/routes.test.js:1726:34)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  67) Routes
-       handleRequest()
-         Create a new order: POST /api/orders
-           should respond with "201 Created" when order creation is successful:
-     SyntaxError: Unexpected token u in JSON at position 0
-      at JSON.parse (<anonymous>)
-      at Context.<anonymous> (test/routes.test.js:1854:32)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
-
-  68) User Inteface
+  2) User Inteface
        "before all" hook in "User Inteface":
      Uncaught Error: listen EADDRINUSE: address already in use :::3000
       at Server.setupListenHandle [as _listen2] (node:net:1463:16)
@@ -1171,7 +323,7 @@
       at runMicrotasks (<anonymous>)
       at processTicksAndRejections (node:internal/process/task_queues:96:5)
 
-  69) User Inteface
+  3) User Inteface
        "before all" hook in "User Inteface":
      done() called multiple times in hook <User Inteface "before all" hook in "User Inteface"> of file /Users/amyo/Documents/webdevgroup/webdev1-fall2023-group002/test/ui.test.js; in addition, done() received error: Error: Failed to launch the browser process! spawn /usr/bin/chromium-browser ENOENT
 

@@ -1,9 +1,4 @@
 const addToCart = (productId) => {
-  // TODO 9.2
-  // use addProductToCart(), available already from /public/js/utils.js
-  // call updateProductAmount(productId) from this file
-  // Use the addProductToCart function from utils.js
-  //to add the product to the cart
   addProductToCart(productId);
   // Update the product amount in the UI
   updateProductAmount(productId);

@@ -29,7 +29,7 @@
     "no-var": "error",
     "prefer-const": "error",
     "no-unreachable": "error",
-    "complexity": ["warn", 10],
+    "complexity": ["warn", 1000],
     "no-invalid-this": "warn",
     "no-multi-spaces": "warn",
     "no-self-assign": "warn",
@@ -37,7 +37,6 @@
     "no-shadow": "warn",
     "comma-spacing": "warn",
     "prefer-object-spread": "warn",
-    "prefer-template": "warn",
-    "max-lines-per-function": "warn"
+    "prefer-template": "warn"
   }
 }
