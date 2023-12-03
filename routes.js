@@ -378,9 +378,6 @@ const handleRequest = async (request, response) => {
       return responseUtils.basicAuthChallenge(response);
     }
 
-    if (currentUser.role === "admin") {
-      return responseUtils.forbidden(response);
-    }
 
     if (!isJson(request)) {
       return responseUtils.badRequest(
@@ -388,10 +385,13 @@ const handleRequest = async (request, response) => {
         "Invalid Content-Type. Expected application/json"
       );
     }
+    if (currentUser.role === "admin") {
+      return responseUtils.forbidden(response);
+    }
 
     const body = await parseBodyJson(request);
     try {
-      return await registerOrder(response, currentUser, body.trim());
+      return await registerOrder(response, currentUser, body);
     } catch (error) {
       responseUtils.badRequest(response);
     }
