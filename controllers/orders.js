@@ -2,7 +2,7 @@ const Order = require('../models/order');
 const responseUtils = require('../utils/responseUtils');
 
 const getAllOrders = async (response) => {
-    const orders = await Order.find({});
+    const orders = await Order.find({}).exec();
     return responseUtils.sendJson(response, orders);
 };
 
@@ -16,7 +16,7 @@ const viewOrder = async (response, orderId, currentUser) => {
     if (!order) {
       return responseUtils.notFound(response);
     }
-    if (currentUser.role === null) {
+    if (currentUser._id !== order.customerId) {
       return responseUtils.notFound(response);
     }
 
@@ -28,7 +28,7 @@ const registerOrder = async (response, orderData) => {
       return responseUtils.badRequest(response, "Incomplete order data");
     }
 
-    const newOrder = new Order(orderData);
+    const newOrder = new Order({...orderData, customerId: currentUser._id});
     await newOrder.save();
     return responseUtils.sendJson(response, newOrder, 201);
 };
