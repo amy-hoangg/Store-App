@@ -236,11 +236,7 @@ const handleRequest = async (request, response) => {
     }
 
     if (method.toUpperCase() === "GET") {
-      try {
-        return await viewOrder(response, orderId, currentUser);
-      } catch (error) {
-        return responseUtils.internalServerError(response);
-      }
+      return await viewOrder(response, orderId, currentUser);
     }
 
     return responseUtils.sendJson(response, order);
@@ -313,7 +309,7 @@ const handleRequest = async (request, response) => {
         return await getAllOrders(response);
       }
       if (currentUser.role === 'customer') {
-        return await getUserOrders(response);
+        return await getUserOrders(response, currentUser);
       }
     } 
     catch (error) {

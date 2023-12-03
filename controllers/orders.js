@@ -13,10 +13,10 @@ const getUserOrders = async (response, currentUser) => {
 
 const viewOrder = async (response, orderId, currentUser) => {
     const order = await Order.findById(orderId).exec();
-    if (!(currentUser._id.equals(order.customerId))) {
-      return responseUtils.badRequest(response, "Cannot delete your own data");
-    }
     if (!order) {
+      return responseUtils.notFound(response);
+    }
+    if (currentUser.role === null) {
       return responseUtils.notFound(response);
     }
 
@@ -24,7 +24,7 @@ const viewOrder = async (response, orderId, currentUser) => {
 };
 
 const registerOrder = async (response, orderData) => {
-    if (!orderData.customerId || !orderData.items || orderData.items.length === 0) {
+    if (!orderData.customerId || !orderData.items || orderData.items.length === 0 || orderData.items === undefined) {
       return responseUtils.badRequest(response, "Incomplete order data");
     }
 
@@ -33,4 +33,4 @@ const registerOrder = async (response, orderData) => {
     return responseUtils.sendJson(response, newOrder, 201);
 };
 
-module.exports = { getAllOrders, registerOrder, viewOrder };
+module.exports = { getAllOrders, getUserOrders, registerOrder, viewOrder };
