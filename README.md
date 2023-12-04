@@ -7,18 +7,25 @@ What should be in this document is detailed in the 11th exercise round assignmen
 # Group 
 
 Member1:  Minh Khanh Pham, minhkhanh.pham@tuni.fi, 151377446, 
-resposible for: TODO, short description of duties 
+resposible for: implement different routes of the project, implement the backend
 
-Member2:  name, email, student ID, 
-resposible for: TODO, short description of duties 
+Member2:  My Hoang, my.hoang@tuni.fi, 151395127, 
+resposible for: implement different routes of the project, fix the user interface
+
+Member 3: Yuhang Du, yuhang.du@tuni.fi, 151257294 
+resposible for: implement different routes of the project (does not do round 11)
 
 
 ......
 
 
-## Tests and documentation
+# Node Project Structure
+[](url)
 
-## 8.3.4 Data models
+# Pages and Navigation
+[](url)
+
+## Data models
 
 <b> User <b>
 
@@ -56,7 +63,7 @@ resposible for: TODO, short description of duties
 | productId | Product | Ordered product | Reference to <b>Product<b> model |
 | quantity | int | Number of items ordered | |
 
-## 8.3.5 Security concerns
+## Security concerns
 
 <b>There are some security concerns our web can meet:</b>
 * Cross-Site Scripting (XSS) injects malicious code into a web page, which then executes on the browser of the user who visits the page. The code can steal the user’s cookies, session tokens, or other sensitive information, or perform actions on behalf of the user. To prevent XSS, we should sanitize and encode the user input before displaying it on the web page, and use Content Security Policy (CSP) to restrict the sources of scripts that can be executed.
@@ -64,7 +71,7 @@ resposible for: TODO, short description of duties
 * Directory traversal attacks the vulnerability of the web application’s file system access. The attacker can manipulate the user input that specifies a file path, and use special characters such as “…” or “/” to access files or directories that are outside the intended scope, and can result in data theft, data corruption, or remote code execution. To prevent directory traversal, we should validate and sanitize the user input before using it as a file path, and also use a whitelist of allowed files or directories, or a blacklist of forbidden characters or patterns.
   
 
-## 8.3.6 Testing
+## Testing
 
 | id   |      GitLab issues                                                                    |  Responsible Person | 
 |------|:--------------------------------------------------------------------------------------|:----------------|
@@ -80,7 +87,7 @@ resposible for: TODO, short description of duties
 |  10   |  Write README part 1-3 https://course-gitlab.tuni.fi/webdev1-fall-2023-groupwork/webdev1-fall2023-group002/-/work_items/29 | My Hoang |
 |  11   |  Write README part 4-7 https://course-gitlab.tuni.fi/webdev1-fall-2023-groupwork/webdev1-fall2023-group002/-/work_items/30 | Minh Khanh Pham |
 
-## 8.3.7 Finalization
+## Finalization
 <b>Summary</b>
 * We built a web application for an online store using HTML, CSS, JavaScript, Node.js, Express, and MongoDB.
 * We learned the basics of browser, HTTP, and web development, such as rendering, templating, session management, and security.
