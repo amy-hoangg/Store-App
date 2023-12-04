@@ -20,10 +20,10 @@ resposible for: implement different routes of the project (does not do round 11)
 
 
 # Node Project Structure
-[](url)
+![Image Description](structure_v2.drawio.png)
 
 # Pages and Navigation
-[](url)
+![Image Description](structure_v2-Page-2.drawio.png)
 
 ## Data models
 
