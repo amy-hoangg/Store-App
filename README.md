@@ -89,7 +89,7 @@ resposible for: implement different routes of the project (does not do round 11)
 
 ## Finalization
 <b>Summary</b>
-* We built a web application for an online store using HTML, CSS, JavaScript, Node.js, Express, and MongoDB.
+* We built a web application for an online store using HTML, CSS, JavaScript, Node.js, and MongoDB.
 * We learned the basics of browser, HTTP, and web development, such as rendering, templating, session management, and security.
 * We applied various techniques and tools to create a dynamic, functional, and secure web application.
 
