@@ -2,7 +2,11 @@
 
 # WebDev1 group work assignment, rounds 8-11
 
-What should be in this document is detailed in the 11th exercise round assignment document in Google Docs. "Group" and "Tests and documentation" are shown below as examples and to give a starting point for your documentation work.
+GUI of the project
+![Image Description](store1.png)
+![Image Description](store2.png)
+![Image Description](store3.png)
+![Image Description](store4.png)
 
 # Group 
 
